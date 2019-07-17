@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:id="@+id/text_app_name"
+        android:layout_width="174dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/app_name"
+        android:textSize="36sp" />
 
     <ListView
-        android:layout_width="395dp"
-        android:layout_height="680dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="43dp" />
+        android:id="@+id/options_list"
+        android:layout_width="match_parent"
+        android:layout_height="386dp"
+        android:layout_marginBottom="150dp"
+        android:layout_below="@id/text_app_name" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id ="@+id/push_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@id/options_list"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/button_add"
+        android:padding="15dp"
+        />
+</RelativeLayout>

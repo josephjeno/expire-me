@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,28 +9,57 @@
     tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/text_app_name"
-        android:layout_width="174dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="30dp"
-        android:text="@string/app_name"
-        android:textSize="36sp" />
-
-    <ListView
-        android:id="@+id/options_list"
+        android:id="@+id/viewAllItemsButton"
         android:layout_width="match_parent"
-        android:layout_height="386dp"
-        android:layout_marginBottom="150dp"
-        android:layout_below="@id/text_app_name" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/border"
+        android:onClick="onAllItemsClicked"
+        android:padding="20dp"
+        android:text="All items"
+        android:textSize="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="10dp" />
+
+    <TextView
+        android:id="@+id/viewSoonToExpireItemsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/border"
+        android:onClick="onAllItemsClicked"
+        android:padding="20dp"
+        android:text="Soon to expire"
+        android:textSize="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/viewAllItemsButton"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/viewExpiredItemsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="38dp"
+        android:background="@drawable/border"
+        android:onClick="onAllItemsClicked"
+        android:padding="20dp"
+        android:text="Expired"
+        android:textSize="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/viewSoonToExpireItemsButton"
+        tools:layout_editor_absoluteX="3dp" />
 
     <Button
-        android:id ="@+id/push_button"
+        android:id="@+id/addItemButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_below="@id/options_list"
-        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_add"
+        android:onClick="onAddItemClicked"
+        android:gravity="right"
         android:padding="15dp"
-        />
-</RelativeLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 

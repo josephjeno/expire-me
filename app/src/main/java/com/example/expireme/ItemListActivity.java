@@ -35,12 +35,12 @@ public class ItemListActivity extends AppCompatActivity {
         // Connect the adapter to the list view
         itemListView.setAdapter(myAdapter);
 
-        //Set the click listener
+        // Set the click listener
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                // trigger the next activity (ItemDetails)
+                // Trigger the next activity (ItemDetails)
                 Intent intent = new Intent(ItemListActivity.this, ItemDetailsActivity.class);
 
                 // Pass in the item name to item details activity
@@ -48,12 +48,15 @@ public class ItemListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
+    // When Add Item button clicked
+    public void onAddItemClicked(View view) {
+        Intent explicitIntent = new Intent(getApplicationContext(), AddItemActivity.class);
+        startActivity(explicitIntent);
+    }
 
-    //Add data into arrayList
+    // Add data into arrayList
     private void PopulateList() {
         expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019"));
         expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019"));

@@ -45,6 +45,9 @@ public class ItemListActivity extends AppCompatActivity {
 
                 // Pass in the item name to item details activity
                 intent.putExtra("ItemName", expirationItems.get(i).getItemName());
+                intent.putExtra("ItemExpiration", expirationItems.get(i).getItemExpiration());
+                intent.putExtra("ItemNotes", expirationItems.get(i).getItemNotes());
+                intent.putExtra("ItemAddedDate", expirationItems.get(i).getItemAddedDate());
                 startActivity(intent);
             }
         });

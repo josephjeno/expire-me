@@ -36,6 +36,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="left"
                 android:scaleType="fitCenter"
+                android:onClick="onbackButtonClicked"
                 android:src="@drawable/back_button" />
 
             <TextView

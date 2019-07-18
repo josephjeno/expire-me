@@ -58,9 +58,9 @@ public class ItemListActivity extends AppCompatActivity {
 
     // Add data into arrayList
     private void PopulateList() {
-        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019"));
-        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019"));
-        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019"));
+        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019"));
+        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019"));
+        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019"));
     }
 }
 

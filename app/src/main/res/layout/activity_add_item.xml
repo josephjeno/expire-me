@@ -82,12 +82,13 @@
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/editTextExpirationDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:ems="10"
+            android:focusable="false"
             android:inputType="number"
             android:hint="@string/add_item_expiration_date_hint" />
 
@@ -117,12 +118,13 @@
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/editTextPurchasedOnDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:ems="10"
+            android:focusable="false"
             android:inputType="number"
             android:hint="@string/add_item_purchased_on_hint" />
 

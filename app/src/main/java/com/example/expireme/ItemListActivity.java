@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -17,6 +20,8 @@ public class ItemListActivity extends AppCompatActivity {
 
     ListView itemListView;
     ArrayList<ItemListAdapterItem> expirationItems = new ArrayList<ItemListAdapterItem>();
+    // Create an array adapter
+    CustomItemAdapter myAdapter = new CustomItemAdapter(this, expirationItems);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +33,6 @@ public class ItemListActivity extends AppCompatActivity {
         // Populate the data into the arrayList
         // TODO: should be retrieving items from DB
         PopulateList();
-
-        // Create an array adapter
-        CustomItemAdapter myAdapter = new CustomItemAdapter(this, expirationItems);
 
         // Connect the adapter to the list view
         itemListView.setAdapter(myAdapter);
@@ -64,6 +66,29 @@ public class ItemListActivity extends AppCompatActivity {
         expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019"));
         expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019"));
         expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019"));
+    }
+
+    private void deleteNameFromList(String name) {
+        for (ItemListAdapterItem item: expirationItems) {
+            if (item.getItemName().equals(name)) {
+                expirationItems.remove(item);
+                break;
+            }
+        }
+        myAdapter.notifyDataSetChanged();
+        // TODO: remove from database
+    }
+
+    public void myDeleteClickHandler(View view) {
+        LinearLayout ll = (LinearLayout)view.getParent();
+        Log.d("ItemListActivity", "clicked trashcan " + view.getId() + " " + ll.getId());
+        Object tag = view.getTag();
+
+        TextView tv = (TextView) ll.getChildAt(0);
+
+        Log.d("ItemListActivity", "deleteing " + tv.getText().toString());
+        deleteNameFromList(tv.getText().toString());
+
     }
 }
 

@@ -1,7 +1,9 @@
 package com.example.expireme;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,8 +71,10 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void deleteItemById(String id) {
+
         for (ItemListAdapterItem item: expirationItems) {
             if (item.getItemId().equals(id)) {
+                Log.d("deleteItemById", "deleting " + item.getItemName() );
                 expirationItems.remove(item);
                 break;
             }
@@ -79,16 +83,51 @@ public class ItemListActivity extends AppCompatActivity {
         // TODO: remove from database
     }
 
+    private void confirmDelete(final String id, String name) {
+        // code originally taken from:
+        // http://www.apnatutorials.com/android/android-alert-confirm-prompt-dialog.php?categoryId=2&subCategoryId=34&myPath=android/android-alert-confirm-prompt-dialog.php
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(name);
+        builder.setMessage("Are you sure you want to delete " + name + " ?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteItemById(id);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+
+        builder.show();
+    }
+
+    private void confirmDelete(String id) {
+        for (ItemListAdapterItem item: expirationItems) {
+            if (item.getItemId().equals(id)) {
+                Log.d("confirmDelete ID", "deleting " + id + " " + item.getItemName() );
+                confirmDelete(id, item.getItemName());
+                break;
+            }
+        }
+    }
+
     public void myDeleteClickHandler(View view) {
         LinearLayout ll = (LinearLayout)view.getParent();
         Log.d("ItemListActivity", "clicked trashcan " + view.getId() + " " + ll.getId());
         Object tag = view.getTag();
 
-        TextView tv = (TextView) ll.getChildAt(0);
+        TextView tv_name = (TextView) ll.getChildAt(0);
         TextView tv_id = (TextView) ll.getChildAt(1);
-        Log.d("ItemListActivity", "deleting " + tv.getText().toString());
+        Log.d("ItemListActivity", "deleting " + tv_name.getText().toString());
         Log.d ("ItemListActivity2",  tv_id.getText().toString() );
-        deleteItemById(tv_id.getText().toString());
+        confirmDelete(tv_id.getText().toString());
+        //confirmDelete(tv_id.getText().toString(), tv_name.getText().toString());
     }
 }
 

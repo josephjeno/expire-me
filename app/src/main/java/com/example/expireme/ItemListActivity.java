@@ -27,6 +27,7 @@ public class ItemListActivity extends AppCompatActivity {
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
 
+        Log.d("handleIncomingItem", itemId);
         Log.d("handleIncomingItem", itemName + itemExpiration + itemNotes +itemAddedDate);
         if (itemId.equals("0")) {
             expirationItems.add(new ItemListAdapterItem(

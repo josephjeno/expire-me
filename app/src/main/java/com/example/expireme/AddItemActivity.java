@@ -46,9 +46,8 @@ public class AddItemActivity extends AppCompatActivity {
     int year,month,dayOfMonth;
     DatePickerDialog datePickerDialog;
 
-    private void updateItemInfo(String newItemId) {
+    private void updateItemInfo() {
         //Extract resourceIDS
-        setItemId(newItemId);
         String itemName = getIntent().getStringExtra("ItemName");
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
         String itemNotes = getIntent().getStringExtra("ItemNotes");
@@ -72,16 +71,14 @@ public class AddItemActivity extends AppCompatActivity {
         itemNotesTextView = findViewById(R.id.add_item_notes);
         itemAddedDateTextView = findViewById(R.id.editTextPurchasedOnDate);
 
-        itemId = "0";
-        String newItemId = getIntent().getStringExtra("ItemId");
-        Log.d("add_item", "new id=" + newItemId + "__" + itemId);
-        if (newItemId != null) {
-            updateItemInfo(newItemId);
+        itemId = getIntent().getStringExtra("ItemId");
+        Log.d("add_item",  "id=" + itemId);
+        if (itemId != null) {
+            updateItemInfo();
         }
-        Log.d("add_item", "new id=" + newItemId + "__" + itemId);
+        Log.d("add_item", " id=" + itemId);
         //itemIdTextView.setText("555");
         backButton = findViewById(R.id.add_item_button_back);
-
         checkButton = findViewById(R.id.add_item_check_button);
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,13 +88,16 @@ public class AddItemActivity extends AppCompatActivity {
                 intent.putExtra("ItemExpiration", itemExpirationTextView.getText().toString());
                 intent.putExtra("ItemNotes", itemNotesTextView.getText().toString());
                 intent.putExtra("ItemAddedDate", itemAddedDateTextView.getText().toString());
-                intent.putExtra("ItemId", itemId);
+                if (itemId != null)
+                    intent.putExtra("ItemId", itemId);
+                else
+                    intent.putExtra("ItemId", "0");
                 Log.d("add_item onclick", "id=" + itemId);
                 startActivity(intent);
             }
         });
 
-        //////////////////////////////////// old code below
+        //////////////////////////////////// iold code below
 
         itemExpirationTextView.setOnClickListener(new View.OnClickListener() {
             @Override

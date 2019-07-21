@@ -2,7 +2,6 @@ package com.example.expireme;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,29 +11,52 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
 import utils.CustomItemAdapter;
 import utils.ItemListAdapterItem;
 
 public class ItemListActivity extends AppCompatActivity {
-
     ListView itemListView;
     ArrayList<ItemListAdapterItem> expirationItems = new ArrayList<ItemListAdapterItem>();
     // Create an array adapter
     CustomItemAdapter myAdapter = new CustomItemAdapter(this, expirationItems);
 
+    private void handleIncomingItem(String itemId) {
+        String itemName = getIntent().getStringExtra("ItemName");
+        String itemExpiration = getIntent().getStringExtra("ItemExpiration");
+        String itemNotes = getIntent().getStringExtra("ItemNotes");
+        String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
+
+        Log.d("gotID", itemName + itemExpiration + itemNotes +itemAddedDate);
+        if (itemId.equals("0")) {
+            expirationItems.add(new ItemListAdapterItem(
+                    itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
+        } else {
+            int i = 0;
+            for (ItemListAdapterItem item: expirationItems) {
+                if (item.getItemId().equals(itemId)) {
+                    expirationItems.set(i,new ItemListAdapterItem(
+                            itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
+                    break;
+                }
+                i++;
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
         itemListView = findViewById(R.id.myItemView);
 
         // Populate the data into the arrayList
         // TODO: should be retrieving items from DB
         PopulateList();
+        String itemId = getIntent().getStringExtra("ItemId");
+        Log.d("itemList", "itemId = " + itemId);
+        if (itemId != null) // we came here from an item view
+            handleIncomingItem(itemId);
 
         // Connect the adapter to the list view
         itemListView.setAdapter(myAdapter);
@@ -43,7 +65,6 @@ public class ItemListActivity extends AppCompatActivity {
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 // Trigger the next activity (ItemDetails)
                 Intent intent = new Intent(ItemListActivity.this, ItemDetailsActivity.class);
 

@@ -25,7 +25,6 @@ public class AddItemActivity extends AppCompatActivity {
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
-    TextView itemIdTextView;
 
     public static String getItemId() {
         return itemId;
@@ -47,8 +46,9 @@ public class AddItemActivity extends AppCompatActivity {
     int year,month,dayOfMonth;
     DatePickerDialog datePickerDialog;
 
-    private void updateItemInfo() {
+    private void updateItemInfo(String newItemId) {
         //Extract resourceIDS
+        setItemId(newItemId);
         String itemName = getIntent().getStringExtra("ItemName");
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
         String itemNotes = getIntent().getStringExtra("ItemNotes");
@@ -66,7 +66,6 @@ public class AddItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
-        itemIdTextView = findViewById(R.id.itemIdAddItem);
         itemTitleTextView = findViewById(R.id.item_title_text);
         itemNameTextView = findViewById(R.id.add_item_name);
         itemExpirationTextView = findViewById(R.id.editTextExpirationDate);
@@ -77,19 +76,10 @@ public class AddItemActivity extends AppCompatActivity {
         String newItemId = getIntent().getStringExtra("ItemId");
         Log.d("add_item", "new id=" + newItemId + "__" + itemId);
         if (newItemId != null) {
-            updateItemInfo();
-            itemIdTextView.setText(newItemId);
-            //itemId = newItemId;
-        } else
-            itemIdTextView.setText(itemId);
-        final String finalID = itemId;
+            updateItemInfo(newItemId);
+        }
         Log.d("add_item", "new id=" + newItemId + "__" + itemId);
         //itemIdTextView.setText("555");
-        Log.d("add_item ", "1 set itemId=" + itemIdTextView.getText().toString());
-        itemIdTextView.setText("" + finalID);
-        Log.d("add_item ", "2 set itemId=" + itemIdTextView.getText().toString() +"__" + finalID);
-        itemIdTextView.setText(getItemId());
-        Log.d("add_item ", "3 set itemId=" + itemIdTextView.getText().toString() + "__" + getItemId());
         backButton = findViewById(R.id.add_item_button_back);
 
         checkButton = findViewById(R.id.add_item_check_button);
@@ -101,9 +91,7 @@ public class AddItemActivity extends AppCompatActivity {
                 intent.putExtra("ItemExpiration", itemExpirationTextView.getText().toString());
                 intent.putExtra("ItemNotes", itemNotesTextView.getText().toString());
                 intent.putExtra("ItemAddedDate", itemAddedDateTextView.getText().toString());
-                intent.putExtra("ItemId", itemIdTextView.getText().toString());
-                Log.d("add_item onclick check", "itemId="+ itemIdTextView.getText().toString()
-                        + " ___ " + itemNameTextView.getText().toString());
+                intent.putExtra("ItemId", itemId);
                 Log.d("add_item onclick", "id=" + itemId);
                 startActivity(intent);
             }

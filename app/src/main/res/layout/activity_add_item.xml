@@ -6,13 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".AddItemActivity">
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
     </LinearLayout>
 
     <LinearLayout
@@ -26,16 +24,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <ImageButton
                 android:id="@+id/add_item_button_back"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="left"
                 android:scaleType="fitCenter"
+                android:onClick="onbackButtonClicked"
                 android:src="@drawable/back_button" />
 
             <TextView
+                android:id="@+id/item_title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -57,18 +56,20 @@
 
         <TextView
             android:id="@+id/add_item_text1"
-            android:text="@string/add_item_name"
-            android:paddingTop="100sp"
-            android:layout_gravity="left"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="@string/add_item_name"
+            android:layout_marginTop="30sp"
+            android:textSize="25sp" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/add_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_gravity="center"
+            android:textSize="30sp"
             android:ems="10"
             android:inputType="text"
             android:hint="@string/add_item_name_hint" />
@@ -77,6 +78,7 @@
             android:id="@+id/add_item_text2"
             android:text="@string/add_item_expiration_date"
             android:paddingTop="40dp"
+            android:textSize="25sp"
             android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -86,6 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:textSize="30sp"
             android:layout_gravity="center"
             android:ems="10"
             android:focusable="false"
@@ -95,24 +98,27 @@
         <TextView
             android:id="@+id/add_item_text3"
             android:text="@string/add_item_note"
+            android:textSize="25sp"
             android:paddingTop="40dp"
             android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/add_item_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:ems="10"
+            android:textSize="30sp"
             android:inputType="text"
             android:hint="@string/add_item_note_hint" />
         <TextView
             android:id="@+id/add_item_text4"
             android:text="@string/add_item_purchased_on"
             android:paddingTop="40dp"
+            android:textSize="25sp"
             android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -124,6 +130,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:ems="10"
+            android:textSize="30sp"
             android:focusable="false"
             android:inputType="number"
             android:hint="@string/add_item_purchased_on_hint" />

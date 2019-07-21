@@ -27,7 +27,7 @@ public class ItemListActivity extends AppCompatActivity {
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
 
-        Log.d("gotID", itemName + itemExpiration + itemNotes +itemAddedDate);
+        Log.d("handleIncomingItem", itemName + itemExpiration + itemNotes +itemAddedDate);
         if (itemId.equals("0")) {
             expirationItems.add(new ItemListAdapterItem(
                     itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
@@ -66,13 +66,13 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // Trigger the next activity (ItemDetails)
-                Intent intent = new Intent(ItemListActivity.this, ItemDetailsActivity.class);
-
+                Intent intent = new Intent(ItemListActivity.this, AddItemActivity.class);
                 // Pass in the item name to item details activity
                 intent.putExtra("ItemName", expirationItems.get(i).getItemName());
                 intent.putExtra("ItemExpiration", expirationItems.get(i).getItemExpiration());
                 intent.putExtra("ItemNotes", expirationItems.get(i).getItemNotes());
                 intent.putExtra("ItemAddedDate", expirationItems.get(i).getItemAddedDate());
+                intent.putExtra("ItemId", expirationItems.get(i).getItemId());
                 startActivity(intent);
             }
         });

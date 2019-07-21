@@ -6,12 +6,15 @@ public class ItemListAdapterItem {
     String itemExpiration;
     String itemNotes;
     String itemAddedDate;
+    String itemId;
 
-    public ItemListAdapterItem(String itemName, String itemExpiration, String itemNotes, String itemAddedDate) {
+
+    public ItemListAdapterItem(String itemName, String itemExpiration, String itemNotes, String itemAddedDate, String itemId) {
         this.itemName = itemName;
         this.itemExpiration = itemExpiration;
         this.itemNotes = itemNotes;
         this.itemAddedDate = itemAddedDate;
+        this.itemId = itemId;
     }
 
     public String getItemName() {
@@ -45,4 +48,8 @@ public class ItemListAdapterItem {
     public void setItemAddedDate(String itemAddedDate) {
         this.itemAddedDate = itemAddedDate;
     }
+
+    public String getItemId() { return itemId; }
+
+    public void setItemId(String itemId) { this.itemId = itemId; }
 }

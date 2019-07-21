@@ -63,14 +63,14 @@ public class ItemListActivity extends AppCompatActivity {
 
     // Add data into arrayList
     private void PopulateList() {
-        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019"));
-        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019"));
-        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019"));
+        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019", "1001"));
+        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019","1002"));
+        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019", "1003"));
     }
 
-    private void deleteNameFromList(String name) {
+    private void deleteItemById(String id) {
         for (ItemListAdapterItem item: expirationItems) {
-            if (item.getItemName().equals(name)) {
+            if (item.getItemId().equals(id)) {
                 expirationItems.remove(item);
                 break;
             }
@@ -85,10 +85,10 @@ public class ItemListActivity extends AppCompatActivity {
         Object tag = view.getTag();
 
         TextView tv = (TextView) ll.getChildAt(0);
-
-        Log.d("ItemListActivity", "deleteing " + tv.getText().toString());
-        deleteNameFromList(tv.getText().toString());
-
+        TextView tv_id = (TextView) ll.getChildAt(1);
+        Log.d("ItemListActivity", "deleting " + tv.getText().toString());
+        Log.d ("ItemListActivity2",  tv_id.getText().toString() );
+        deleteItemById(tv_id.getText().toString());
     }
 }
 

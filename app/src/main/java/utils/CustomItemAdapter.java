@@ -55,6 +55,7 @@ public class CustomItemAdapter extends BaseAdapter {
 
             viewHolder.itemName = view.findViewById(R.id.itemNameAdapterItem);
             viewHolder.itemExpiration = view.findViewById(R.id.itemExpirationAdapterItem);
+            viewHolder.itemId = view.findViewById(R.id.itemIdAdapterItem);
 
             // Link the viewHolder to my view
             view.setTag(viewHolder);
@@ -66,6 +67,7 @@ public class CustomItemAdapter extends BaseAdapter {
         // Override the values of the child views
         viewHolder.itemName.setText(expirationItems.get(i).getItemName());
         viewHolder.itemExpiration.setText(expirationItems.get(i).getItemExpiration());
+        viewHolder.itemId.setText(expirationItems.get(i).getItemId());
 
         return view;
     }
@@ -74,5 +76,6 @@ public class CustomItemAdapter extends BaseAdapter {
     static class ViewHolder{
         TextView itemName;
         TextView itemExpiration;
+        TextView itemId;
     }
 }

@@ -18,6 +18,12 @@
             android:layout_gravity="left"
             android:textSize="30sp"
             android:textStyle="bold" />
+        <TextView
+            android:id="@+id/itemIdAdapterItem"
+            android:textSize="0sp"
+            android:text="id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <ImageView
             android:id="@+id/itemTrashcanAdapterItem"
             android:src="@drawable/delete_button"

@@ -1,4 +1,4 @@
-package com.example.expireme;
+package utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(FoodItemEntry.COLUMN_NAME_FOOD_NAME, item.getName());
         values.put(FoodItemEntry.COLUMN_NAME_NOTE, item.getNote());
         values.put(FoodItemEntry.COLUMN_NAME_DATE_ADDED, item.getDateAdded());
-        values.put(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE, item.getExpirtyDate());
+        values.put(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE, item.getExpiryDate());
 
         long result = db.insert(FoodItemEntry.TABLE_NAME, null, values);
 
@@ -120,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(FoodItemEntry.COLUMN_NAME_FOOD_NAME, item.getName());
         values.put(FoodItemEntry.COLUMN_NAME_NOTE, item.getNote());
         values.put(FoodItemEntry.COLUMN_NAME_DATE_ADDED, item.getDateAdded());
-        values.put(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE, item.getExpirtyDate());
+        values.put(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE, item.getExpiryDate());
 
         String selection = FoodItemEntry._ID + "=?";
         String[] selectionArgs = {item.getId().toString()};

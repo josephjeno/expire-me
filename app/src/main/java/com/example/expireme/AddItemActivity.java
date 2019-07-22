@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+import utils.DatabaseHelper;
 import utils.FoodItem;
 
 public class AddItemActivity extends AppCompatActivity {

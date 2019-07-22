@@ -10,50 +10,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+
 
 import java.util.ArrayList;
 import utils.CustomItemAdapter;
 import utils.FoodItem;
-import utils.ItemListAdapterItem;
 import utils.SwipeToDeleteCallback;
 
 public class ItemListActivity extends AppCompatActivity implements CustomItemAdapter.ItemClickListener {
+
+    // This is the view that displays the list of items
     RecyclerView recyclerView;
+
+    // List of items
     ArrayList<FoodItem> items = new ArrayList<>();
-    // Create an array adapter
+
     CustomItemAdapter myAdapter;
-
-//     private void handleIncomingItem(String itemId) {
-//         String itemName = getIntent().getStringExtra("ItemName");
-//         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
-//         String itemNotes = getIntent().getStringExtra("ItemNotes");
-//         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
-
-//         Log.d("handleIncomingItem", itemId);
-//         Log.d("handleIncomingItem", itemName + itemExpiration + itemNotes +itemAddedDate);
-//         if (itemId.equals("0")) {
-//             expirationItems.add(new ItemListAdapterItem(
-//                     itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
-//         } else {
-//             int i = 0;
-//             for (ItemListAdapterItem item: expirationItems) {
-//                 if (item.getItemId().equals(itemId)) {
-//                     expirationItems.set(i,new ItemListAdapterItem(
-//                             itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
-//                     break;
-//                 }
-//                 i++;
-//             }
-//         }
-//     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
 
         // Populate the data into the arrayList
         // TODO: should be retrieving items from DB
@@ -63,47 +40,41 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         // Connect the adapter to the list view
         recyclerView = findViewById(R.id.myRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        myAdapter = new CustomItemAdapter(this, expirationItems);
+        myAdapter = new CustomItemAdapter(this, items);
         myAdapter.setClickListener(this);
         recyclerView.setAdapter(myAdapter);
 
+        // Helper that controls item swipes (left to delete, right to edit, hold to select multiple)
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    // Navigates to Item Details screen when item is selected from the list
     @Override
     public void onItemClick(View view, int position) {
         // Trigger the next activity (ItemDetails)
-        Intent intent = new Intent(ItemListActivity.this, AddItemActivity.class);
+        Intent intent = new Intent(ItemListActivity.this, ItemDetailsActivity.class);
         // Pass in the item name to item details activity
-        intent.putExtra("ItemName", expirationItems.get(position).getItemName());
-        intent.putExtra("ItemExpiration", expirationItems.get(position).getItemExpiration());
-        intent.putExtra("ItemNotes", expirationItems.get(position).getItemNotes());
-        intent.putExtra("ItemAddedDate", expirationItems.get(position).getItemAddedDate());
-        intent.putExtra("ItemId", expirationItems.get(position).getItemId());
+        intent.putExtra("ItemName", items.get(position).getName());
+        intent.putExtra("ItemExpiration", items.get(position).getExpiryDate());
+        intent.putExtra("ItemNotes", items.get(position).getNote());
+        intent.putExtra("ItemAddedDate", items.get(position).getDateAdded());
+        intent.putExtra("ItemId", items.get(position).getId());
         startActivity(intent);
     }
 
-    // When Add Item button clicked
+    // Navigates to Add Item screen when Add Item button is pressed
     public void onAddItemClicked(View view) {
         Intent explicitIntent = new Intent(getApplicationContext(), AddItemActivity.class);
         startActivity(explicitIntent);
     }
 
-     // Add data into arrayList
-    private void PopulateList() {
-        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019", "1001"));
-        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019","1002"));
-        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019", "1003"));
-    }
-
-    private void setUpRecyclerView() {
-        recyclerView.setAdapter(myAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-    }
+//     // Add data into arrayList
+//    private void PopulateList() {
+//        items.add(new FoodItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019"));
+//        items.add(new FoodItem("Tomatoes", "7/16/2019", null, "7/6/2019"));
+//        items.add(new FoodItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019"));
+//    }
   
 //    private void deleteItemById(String id) {
 //

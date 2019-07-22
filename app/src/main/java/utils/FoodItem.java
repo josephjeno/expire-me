@@ -9,7 +9,7 @@ public class FoodItem implements Parcelable {
     private String name;
     private String note;
     private String dateAdded;
-    private String expirtyDate;
+    private String expiryDate;
 
 
     @Override
@@ -22,7 +22,7 @@ public class FoodItem implements Parcelable {
         name = in.readString();
         note = in.readString();
         dateAdded = in.readString();
-        expirtyDate = in.readString();
+        expiryDate = in.readString();
     }
 
     public static final Creator<FoodItem> CREATOR = new Creator<FoodItem>() {
@@ -46,7 +46,7 @@ public class FoodItem implements Parcelable {
         this.name = name;
         this.note = note;
         this.dateAdded = dateAdded;
-        this.expirtyDate = expirtyDate;
+        this.expiryDate = expirtyDate;
     }
 
     public String getName() {
@@ -73,12 +73,12 @@ public class FoodItem implements Parcelable {
         this.dateAdded = dateAdded;
     }
 
-    public String getExpirtyDate() {
-        return expirtyDate;
+    public String getExpiryDate() {
+        return expiryDate;
     }
 
-    public void setExpirtyDate(String expirtyDate) {
-        this.expirtyDate = expirtyDate;
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public Long getId() {

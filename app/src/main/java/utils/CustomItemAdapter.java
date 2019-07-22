@@ -21,23 +21,20 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // ArrayList with the item expiration data points to populate adapter
     private ArrayList<FoodItem> items;
-    ItemClickListener myClickListener;
+
+    private ItemClickListener myClickListener;
 
     public CustomItemAdapter(Context context, ArrayList<FoodItem> items) {
         this.context = context;
         this.items = items;
     }
 
-
-
-
+    // Getter for context
     public Context getContext() {
         return context;
     }
 
-    @Override
-    public Object getItem(int i) {
-        return items.get(i);
+
 
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_list_adapter_item,parent,false);
@@ -46,15 +43,21 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ItemListAdapterItem item = expirationItems.get(position);
-        holder.itemName.setText(item.getItemName());
-        holder.itemExpiration.setText(item.getItemExpiration());
+        FoodItem item = items.get(position);
+        holder.itemName.setText(item.getName());
+        holder.itemExpiration.setText(item.getExpiryDate());
     }
+
+//    @Override
+//    public Object getItem(int i) {
+//        return items.get(i);
+//    }
   
-    // Total number of items to be displayed on listView
-    @Override
-    public int getCount() {
-        return items.size();
+//    // Total number of items to be displayed on listView
+//    @Override
+//    public int getCount() {
+//        return items.size();
+//    }
 
     @Override
     public int getItemCount() {
@@ -84,14 +87,14 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     }
 
 
-        // Override the values of the child views
-        viewHolder.itemName.setText(items.get(i).getName());
-        viewHolder.itemExpiration.setText(items.get(i).getExpirtyDate());
-        viewHolder.itemId.setText(items.get(i).getId().toString());
+//        // Override the values of the child views
+//        viewHolder.itemName.setText(items.get(i).getName());
+//        viewHolder.itemExpiration.setText(items.get(i).getExpiryDate());
+//        viewHolder.itemId.setText(items.get(i).getId().toString());
 
     // convenience method for getting data at click position
-    ItemListAdapterItem getItem(int id) {
-        return expirationItems.get(id);
+    FoodItem getItem(int id) {
+        return items.get(id);
     }
 
 

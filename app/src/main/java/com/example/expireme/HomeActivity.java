@@ -8,6 +8,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import utils.DatabaseHelper;
 import utils.FoodItem;
 
 public class HomeActivity extends AppCompatActivity {

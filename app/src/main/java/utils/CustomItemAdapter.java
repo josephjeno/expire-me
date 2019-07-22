@@ -65,7 +65,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     }
 
     public void deleteItem(int position) {
-        items.remove(position);
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        dbHelper.deleteItem(items.get(position).getId());
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

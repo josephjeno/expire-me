@@ -14,6 +14,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 import utils.CustomItemAdapter;
+import utils.DatabaseHelper;
 import utils.FoodItem;
 import utils.SwipeToDeleteCallback;
 
@@ -33,9 +34,8 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         setContentView(R.layout.activity_item_list);
 
         // Populate the data into the arrayList
-        // TODO: should be retrieving items from DB
-
-        items = getIntent().getParcelableArrayListExtra("foodItems");
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        items = dbHelper.getAllItems();
 
         // Connect the adapter to the list view
         recyclerView = findViewById(R.id.myRecyclerView);

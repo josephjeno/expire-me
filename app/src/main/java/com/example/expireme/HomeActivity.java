@@ -6,30 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.ArrayList;
-
-import utils.DatabaseHelper;
-import utils.FoodItem;
-
 public class HomeActivity extends AppCompatActivity {
 
-    ArrayList<FoodItem> allFoodItems;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        allFoodItems = dbHelper.getAllItems();
     }
 
     public void onAllItemsClicked(View view) {
-        Intent explicitIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-        explicitIntent.putParcelableArrayListExtra("foodItems", allFoodItems);
-        startActivity(explicitIntent);
+        Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+        startActivity(intent);
     }
 
     public void onAddItemClicked(View view) {
-        Intent explicitIntent = new Intent(getApplicationContext(), AddItemActivity.class);
-        startActivity(explicitIntent);
+        Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+        startActivity(intent);
     }
 }

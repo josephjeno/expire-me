@@ -13,26 +13,26 @@ import java.util.ArrayList;
 public class CustomItemAdapter extends BaseAdapter {
 
     // Receive the context from ItemListActivity
-    Context context;
+    private Context context;
 
     // ArrayList with the item expiration data points to populate adapter
-    ArrayList<ItemListAdapterItem> expirationItems;
+    private ArrayList<FoodItem> items;
 
-    public CustomItemAdapter(Context context, ArrayList<ItemListAdapterItem> expirationItems) {
+    public CustomItemAdapter(Context context, ArrayList<FoodItem> items) {
         this.context = context;
-        this.expirationItems = expirationItems;
+        this.items = items;
     }
 
     // Total number of items to be displayed on listView
     @Override
     public int getCount() {
-        return expirationItems.size();
+        return items.size();
     }
 
     // Extracts the data of the item at specific location in the list
     @Override
     public Object getItem(int i) {
-        return expirationItems.get(i);
+        return items.get(i);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class CustomItemAdapter extends BaseAdapter {
         }
 
         // Override the values of the child views
-        viewHolder.itemName.setText(expirationItems.get(i).getItemName());
-        viewHolder.itemExpiration.setText(expirationItems.get(i).getItemExpiration());
-        viewHolder.itemId.setText(expirationItems.get(i).getItemId());
+        viewHolder.itemName.setText(items.get(i).getName());
+        viewHolder.itemExpiration.setText(items.get(i).getExpirtyDate());
+        viewHolder.itemId.setText(items.get(i).getId().toString());
 
         return view;
     }

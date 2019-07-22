@@ -14,9 +14,10 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+import utils.FoodItem;
+
 public class AddItemActivity extends AppCompatActivity {
 
-    static String itemId = "0";
     ImageButton backButton;
     ImageButton checkButton;
 
@@ -25,15 +26,6 @@ public class AddItemActivity extends AppCompatActivity {
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
-
-    public static String getItemId() {
-        return itemId;
-    }
-
-    public static void setItemId(String itemId) {
-        itemId = itemId;
-    }
-
 
     // When back button clicked
     public void onbackButtonClicked(View view) {
@@ -71,29 +63,22 @@ public class AddItemActivity extends AppCompatActivity {
         itemNotesTextView = findViewById(R.id.add_item_notes);
         itemAddedDateTextView = findViewById(R.id.editTextPurchasedOnDate);
 
-        itemId = getIntent().getStringExtra("ItemId");
-        Log.d("add_item",  "id=" + itemId);
-        if (itemId != null) {
-            updateItemInfo();
-        }
-        Log.d("add_item", " id=" + itemId);
-        //itemIdTextView.setText("555");
+
         backButton = findViewById(R.id.add_item_button_back);
         checkButton = findViewById(R.id.add_item_check_button);
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
-                intent.putExtra("ItemName", itemNameTextView.getText().toString()   );
-                intent.putExtra("ItemExpiration", itemExpirationTextView.getText().toString());
-                intent.putExtra("ItemNotes", itemNotesTextView.getText().toString());
-                intent.putExtra("ItemAddedDate", itemAddedDateTextView.getText().toString());
-                if (itemId != null)
-                    intent.putExtra("ItemId", itemId);
-                else
-                    intent.putExtra("ItemId", "0");
-                Log.d("add_item onclick", "id=" + itemId);
-                startActivity(intent);
+                // add item to database
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+                FoodItem foodItem = new FoodItem(
+                        itemNameTextView.getText().toString(),
+                        itemNotesTextView.getText().toString(),
+                        itemAddedDateTextView.getText().toString(),
+                        itemExpirationTextView.getText().toString()
+                );
+                dbHelper.addFoodItem(foodItem);
+                onbackButtonClicked(view);
             }
         });
 

@@ -1,49 +1,46 @@
 package com.example.expireme;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
+
 import java.util.ArrayList;
 import utils.CustomItemAdapter;
-import utils.ItemListAdapterItem;
+import utils.FoodItem;
 
 public class ItemListActivity extends AppCompatActivity {
     ListView itemListView;
-    ArrayList<ItemListAdapterItem> expirationItems = new ArrayList<ItemListAdapterItem>();
+    ArrayList<FoodItem> items = new ArrayList<>();
     // Create an array adapter
-    CustomItemAdapter myAdapter = new CustomItemAdapter(this, expirationItems);
+    CustomItemAdapter myAdapter = new CustomItemAdapter(this, items);
 
-    private void handleIncomingItem(String itemId) {
-        String itemName = getIntent().getStringExtra("ItemName");
-        String itemExpiration = getIntent().getStringExtra("ItemExpiration");
-        String itemNotes = getIntent().getStringExtra("ItemNotes");
-        String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
-
-        Log.d("handleIncomingItem", itemId);
-        Log.d("handleIncomingItem", itemName + itemExpiration + itemNotes +itemAddedDate);
-        if (itemId.equals("0")) {
-            expirationItems.add(new ItemListAdapterItem(
-                    itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
-        } else {
-            int i = 0;
-            for (ItemListAdapterItem item: expirationItems) {
-                if (item.getItemId().equals(itemId)) {
-                    expirationItems.set(i,new ItemListAdapterItem(
-                            itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
-                    break;
-                }
-                i++;
-            }
-        }
-    }
+//    private void handleIncomingItem(String itemId) {
+//        String itemName = getIntent().getStringExtra("ItemName");
+//        String itemExpiration = getIntent().getStringExtra("ItemExpiration");
+//        String itemNotes = getIntent().getStringExtra("ItemNotes");
+//        String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
+//
+//        Log.d("handleIncomingItem", itemId);
+//        Log.d("handleIncomingItem", itemName + itemExpiration + itemNotes +itemAddedDate);
+//        if (itemId.equals("0")) {
+//            expirationItems.add(new ItemListAdapterItem(
+//                    itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
+//        } else {
+//            int i = 0;
+//            for (ItemListAdapterItem item: expirationItems) {
+//                if (item.getItemId().equals(itemId)) {
+//                    expirationItems.set(i,new ItemListAdapterItem(
+//                            itemName, itemExpiration, itemNotes, itemAddedDate, itemId));
+//                    break;
+//                }
+//                i++;
+//            }
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +50,8 @@ public class ItemListActivity extends AppCompatActivity {
 
         // Populate the data into the arrayList
         // TODO: should be retrieving items from DB
-        PopulateList();
-        String itemId = getIntent().getStringExtra("ItemId");
-        Log.d("itemList", "itemId = " + itemId);
-        if (itemId != null) // we came here from an item view
-            handleIncomingItem(itemId);
+
+        items = getIntent().getParcelableArrayListExtra("foodItems");
 
         // Connect the adapter to the list view
         itemListView.setAdapter(myAdapter);
@@ -69,11 +63,11 @@ public class ItemListActivity extends AppCompatActivity {
                 // Trigger the next activity (ItemDetails)
                 Intent intent = new Intent(ItemListActivity.this, AddItemActivity.class);
                 // Pass in the item name to item details activity
-                intent.putExtra("ItemName", expirationItems.get(i).getItemName());
-                intent.putExtra("ItemExpiration", expirationItems.get(i).getItemExpiration());
-                intent.putExtra("ItemNotes", expirationItems.get(i).getItemNotes());
-                intent.putExtra("ItemAddedDate", expirationItems.get(i).getItemAddedDate());
-                intent.putExtra("ItemId", expirationItems.get(i).getItemId());
+                intent.putExtra("ItemName", items.get(i).getName());
+                intent.putExtra("ItemExpiration", items.get(i).getExpirtyDate());
+                intent.putExtra("ItemNotes", items.get(i).getNote());
+                intent.putExtra("ItemAddedDate", items.get(i).getDateAdded());
+                intent.putExtra("ItemId", items.get(i).getId());
                 startActivity(intent);
             }
         });
@@ -85,71 +79,64 @@ public class ItemListActivity extends AppCompatActivity {
         startActivity(explicitIntent);
     }
 
-    // Add data into arrayList
-    private void PopulateList() {
-        expirationItems.add(new ItemListAdapterItem("Milk", "Expired 7/9/2019", "Drink before it goes bad", "6/30/2019", "1001"));
-        expirationItems.add(new ItemListAdapterItem("Tomatoes", "7/16/2019", null, "7/6/2019","1002"));
-        expirationItems.add(new ItemListAdapterItem("Chocolate Milk", "7/21/2019", "Shake before drinking", "7/02/2019", "1003"));
-    }
+//    private void deleteItemById(String id) {
+//
+//        for (ItemListAdapterItem item: expirationItems) {
+//            if (item.getItemId().equals(id)) {
+//                Log.d("deleteItemById", "deleting " + item.getItemName() );
+//                expirationItems.remove(item);
+//                break;
+//            }
+//        }
+//        myAdapter.notifyDataSetChanged();
+//        // TODO: remove from database
+//    }
 
-    private void deleteItemById(String id) {
+//    private void confirmDelete(final String id, String name) {
+//        // code originally taken from:
+//        // http://www.apnatutorials.com/android/android-alert-confirm-prompt-dialog.php?categoryId=2&subCategoryId=34&myPath=android/android-alert-confirm-prompt-dialog.php
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(name);
+//        builder.setMessage("Are you sure you want to delete " + name + " ?");
+//        builder.setCancelable(false);
+//        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                deleteItemById(id);
+//            }
+//        });
+//
+//        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // do nothing
+//            }
+//        });
+//
+//        builder.show();
+//    }
+//
+//    private void confirmDelete(String id) {
+//        for (ItemListAdapterItem item: expirationItems) {
+//            if (item.getItemId().equals(id)) {
+//                Log.d("confirmDelete ID", "deleting " + id + " " + item.getItemName() );
+//                confirmDelete(id, item.getItemName());
+//                break;
+//            }
+//        }
+//    }
 
-        for (ItemListAdapterItem item: expirationItems) {
-            if (item.getItemId().equals(id)) {
-                Log.d("deleteItemById", "deleting " + item.getItemName() );
-                expirationItems.remove(item);
-                break;
-            }
-        }
-        myAdapter.notifyDataSetChanged();
-        // TODO: remove from database
-    }
-
-    private void confirmDelete(final String id, String name) {
-        // code originally taken from:
-        // http://www.apnatutorials.com/android/android-alert-confirm-prompt-dialog.php?categoryId=2&subCategoryId=34&myPath=android/android-alert-confirm-prompt-dialog.php
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(name);
-        builder.setMessage("Are you sure you want to delete " + name + " ?");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteItemById(id);
-            }
-        });
-
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // do nothing
-            }
-        });
-
-        builder.show();
-    }
-
-    private void confirmDelete(String id) {
-        for (ItemListAdapterItem item: expirationItems) {
-            if (item.getItemId().equals(id)) {
-                Log.d("confirmDelete ID", "deleting " + id + " " + item.getItemName() );
-                confirmDelete(id, item.getItemName());
-                break;
-            }
-        }
-    }
-
-    public void myDeleteClickHandler(View view) {
-        LinearLayout ll = (LinearLayout)view.getParent();
-        Log.d("ItemListActivity", "clicked trashcan " + view.getId() + " " + ll.getId());
-        Object tag = view.getTag();
-
-        TextView tv_name = (TextView) ll.getChildAt(0);
-        TextView tv_id = (TextView) ll.getChildAt(1);
-        Log.d("ItemListActivity", "deleting " + tv_name.getText().toString());
-        Log.d ("ItemListActivity2",  tv_id.getText().toString() );
-        confirmDelete(tv_id.getText().toString());
-        //confirmDelete(tv_id.getText().toString(), tv_name.getText().toString());
-    }
+//    public void myDeleteClickHandler(View view) {
+//        LinearLayout ll = (LinearLayout)view.getParent();
+//        Log.d("ItemListActivity", "clicked trashcan " + view.getId() + " " + ll.getId());
+//        Object tag = view.getTag();
+//
+//        TextView tv_name = (TextView) ll.getChildAt(0);
+//        TextView tv_id = (TextView) ll.getChildAt(1);
+//        Log.d("ItemListActivity", "deleting " + tv_name.getText().toString());
+//        Log.d ("ItemListActivity2",  tv_id.getText().toString() );
+//        confirmDelete(tv_id.getText().toString());
+//        //confirmDelete(tv_id.getText().toString(), tv_name.getText().toString());
+//    }
 }
 

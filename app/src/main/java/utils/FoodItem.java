@@ -39,14 +39,18 @@ public class FoodItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
+        parcel.writeLong(id);
+        parcel.writeString(name);
+        parcel.writeString(note);
+        parcel.writeString(dateAdded);
+        parcel.writeString(expiryDate);
     }
 
-    public FoodItem(String name, String note, String dateAdded, String expirtyDate) {
+    public FoodItem(String name, String note, String dateAdded, String expiryDate) {
         this.name = name;
         this.note = note;
         this.dateAdded = dateAdded;
-        this.expiryDate = expirtyDate;
+        this.expiryDate = expiryDate;
     }
 
     public String getName() {

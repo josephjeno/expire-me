@@ -1,18 +1,21 @@
 package utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> {
 
@@ -46,24 +49,17 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         FoodItem item = items.get(position);
         holder.itemName.setText(item.getName());
         holder.itemExpiration.setText(item.getExpiryDate());
+        String countdownText = convertCountdownText(item.getExpiryDate());
+        holder.itemCountdown.setText(countdownText);
+        //TODO get countdown color
     }
-
-//    @Override
-//    public Object getItem(int i) {
-//        return items.get(i);
-//    }
-  
-//    // Total number of items to be displayed on listView
-//    @Override
-//    public int getCount() {
-//        return items.size();
-//    }
 
     @Override
     public int getItemCount() {
         return items.size();
     }
 
+    // Deletes item from DB and list and refreshes view
     public void deleteItem(int position) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.deleteItem(items.get(position).getId());
@@ -71,15 +67,39 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         this.notifyDataSetChanged();
     }
 
+    // Returns difference between expiration date and today's date
+    private String convertCountdownText(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        Date currentDate = new Date();
+        Date expirationDate = new Date(); // In case item expiration date isn't populated for some reason
+        try {
+            expirationDate = sdf.parse(date);
+        } catch (ParseException e) {
+            Log.v("Exception", e.getLocalizedMessage());
+        }
+        long diffInMillies = expirationDate.getTime() - currentDate.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+        if (diffInDays <= 0) {
+            return "!";
+        } else if (diffInDays < 30){
+            return diffInDays + " days";
+        } else {
+            return (diffInDays / 30) + " months";
+        }
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView itemName;
         TextView itemExpiration;
+        TextView itemCountdown;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.itemNameAdapterItem);
             itemExpiration = itemView.findViewById(R.id.itemExpirationAdapterItem);
+            itemCountdown = itemView.findViewById(R.id.itemCountdownAdapterItem);
             itemView.setOnClickListener(this);
         }
 
@@ -88,18 +108,6 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
             if (myClickListener != null) myClickListener.onItemClick(view, getAdapterPosition());
         }
     }
-
-
-//        // Override the values of the child views
-//        viewHolder.itemName.setText(items.get(i).getName());
-//        viewHolder.itemExpiration.setText(items.get(i).getExpiryDate());
-//        viewHolder.itemId.setText(items.get(i).getId().toString());
-
-    // convenience method for getting data at click position
-    FoodItem getItem(int id) {
-        return items.get(id);
-    }
-
 
     // allows clicks events to be caught
     public void setClickListener(ItemClickListener itemClickListener) {

@@ -22,6 +22,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
+    TextView itemAddedDateTitleTextView;
+    TextView itemNotesTitleTextView;
     private Long itemID;
 
     @Override
@@ -33,8 +35,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemTitleTextView = findViewById(R.id.item_title);
         itemNameTextView = findViewById(R.id.item_name);
         itemExpirationTextView = findViewById(R.id.item_expiration);
-        itemNotesTextView = findViewById(R.id.item_note);
-        itemAddedDateTextView = findViewById(R.id.item_purchased);
+        itemNotesTextView = findViewById(R.id.itemDetailsNoteText);
+        itemNotesTitleTextView = findViewById(R.id.itemDetailsNoteTitle);
+        itemAddedDateTextView = findViewById(R.id.itemDetailsPurchasedOnText);
+        itemAddedDateTitleTextView = findViewById(R.id.itemDetailsPurchasedOnTitle);
 
         //Extract resourceIDS
         String itemName = getIntent().getStringExtra("ItemName");
@@ -42,11 +46,19 @@ public class ItemDetailsActivity extends AppCompatActivity {
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
         itemID = getIntent().getLongExtra("ItemId", -1);
-        itemTitleTextView.setText(itemName);
+        itemTitleTextView.setText("             ");
         itemNameTextView.setText(itemName);
         itemExpirationTextView.setText(itemExpiration);
-        itemNotesTextView.setText(itemNotes);
-        itemAddedDateTextView.setText(itemAddedDate);
+        if (itemNotes.length() == 0) {
+            itemNotesTitleTextView.setTextSize(0);
+            itemNotesTextView.setTextSize(0);
+        } else
+            itemNotesTextView.setText(itemNotes);
+        if (itemAddedDate.length() == 0) {
+            itemAddedDateTitleTextView.setTextSize(0);
+            itemAddedDateTextView.setTextSize(0);
+        } else
+            itemAddedDateTextView.setText(itemAddedDate);
     }
 
     // When back button clicked

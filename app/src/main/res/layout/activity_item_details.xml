@@ -45,7 +45,7 @@
                 android:layout_width="164dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:text="@string/show_item_title_name"
+                android:hint=""
                 android:textColor="#228b22"
                 android:textSize="40sp"
                 android:textStyle="bold" />
@@ -69,7 +69,6 @@
         <TextView
             android:id="@+id/show_item_text1"
             android:text="@string/show_item_name"
-            android:paddingTop="100sp"
             android:textSize="30sp"
             android:layout_gravity="left"
             android:layout_width="wrap_content"
@@ -107,7 +106,7 @@
             android:hint="@string/show_item_expiration_date_hint" />
 
         <TextView
-            android:id="@+id/show_item_text3"
+            android:id="@+id/itemDetailsNoteTitle"
             android:text="@string/show_item_note"
             android:paddingTop="40dp"
             android:textSize="30sp"
@@ -116,7 +115,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/item_note"
+            android:id="@+id/itemDetailsNoteText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -126,7 +125,7 @@
             android:inputType="text"
             android:hint="@string/show_item_note_hint" />
         <TextView
-            android:id="@+id/show_item_text4"
+            android:id="@+id/itemDetailsPurchasedOnTitle"
             android:text="@string/show_item_purchased_on"
             android:paddingTop="40dp"
             android:textSize="30sp"
@@ -135,7 +134,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/item_purchased"
+            android:id="@+id/itemDetailsPurchasedOnText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

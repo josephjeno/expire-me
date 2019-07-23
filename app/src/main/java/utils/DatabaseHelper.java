@@ -70,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FoodItemEntry.COLUMN_NAME_EXPIRY_DATE,
                 FoodItemEntry.COLUMN_NAME_NOTE
         };
+        String sortOrder = FoodItemEntry.COLUMN_NAME_EXPIRY_DATE + " DESC";
         Cursor cursor = db.query(
                 FoodItemEntry.TABLE_NAME,
                 projection,
@@ -77,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null,
-                null
+                sortOrder
         );
         ArrayList<FoodItem> foodItems = new ArrayList<>();
         while (cursor.moveToNext()){

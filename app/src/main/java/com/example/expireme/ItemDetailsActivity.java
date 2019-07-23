@@ -1,13 +1,17 @@
 package com.example.expireme;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import utils.DatabaseHelper;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
@@ -18,6 +22,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
+    private Long itemID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
-
+        itemID = getIntent().getLongExtra("ItemId", -1);
         itemTitleTextView.setText(itemName);
         itemNameTextView.setText(itemName);
         itemExpirationTextView.setText(itemExpiration);
@@ -48,5 +53,26 @@ public class ItemDetailsActivity extends AppCompatActivity {
     public void onbackButtonClicked(View view) {
         Intent explicitIntent = new Intent(getApplicationContext(), ItemListActivity.class);
         startActivity(explicitIntent);
+    }
+
+    public void onDeleteButtonClicked(View view){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        // needs to be declared final to be accessed from inner class
+        final View viewFromOuterClass = view;
+        alert.setTitle("Delete Food Item!");
+        alert.setMessage("Are you sure you want to delete?");
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
+            public void onClick(DialogInterface dialog, int which) {
+                helper.deleteItem(itemID);
+                onbackButtonClicked(viewFromOuterClass);
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
     }
 }

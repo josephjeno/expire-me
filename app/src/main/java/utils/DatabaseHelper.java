@@ -91,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE));
             String note = cursor.getString(
                     cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_NOTE));
-            FoodItem foodItem = new FoodItem(name, dateadded, expiryDate, note);
+            FoodItem foodItem = new FoodItem(name, note, dateadded, expiryDate);
             foodItem.setId(itemId);
             foodItems.add(foodItem);
         }

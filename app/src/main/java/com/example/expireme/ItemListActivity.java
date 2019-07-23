@@ -24,7 +24,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     RecyclerView recyclerView;
 
     // List of items
-    ArrayList<FoodItem> items = new ArrayList<>();
+    ArrayList<FoodItem> items;
 
     CustomItemAdapter myAdapter;
 

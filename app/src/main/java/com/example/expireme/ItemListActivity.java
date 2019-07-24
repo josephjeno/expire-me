@@ -66,7 +66,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         // remove items according to list type
         String listType = getIntent().getStringExtra("ListType");
         Log.d("ItemListActivity", "listType=" + listType);
-        if (!listType.equals("ALL")) {
+        if (listType != null && !listType.equals("ALL")) {
             Date currentDate = new Date();
 
             ListIterator<FoodItem> listIterator = items.listIterator();

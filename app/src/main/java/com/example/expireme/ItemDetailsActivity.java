@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import utils.DatabaseHelper;
+import utils.FoodItem;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
@@ -22,7 +24,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
-    private Long itemID;
+    FoodItem food;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +37,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemExpirationTextView = findViewById(R.id.item_expiration);
         itemNotesTextView = findViewById(R.id.item_note);
         itemAddedDateTextView = findViewById(R.id.item_purchased);
-
-        //Extract resourceIDS
-        String itemName = getIntent().getStringExtra("ItemName");
-        String itemExpiration = getIntent().getStringExtra("ItemExpiration");
-        String itemNotes = getIntent().getStringExtra("ItemNotes");
-        String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
-        itemID = getIntent().getLongExtra("ItemId", -1);
-        itemTitleTextView.setText(itemName);
-        itemNameTextView.setText(itemName);
-        itemExpirationTextView.setText(itemExpiration);
-        itemNotesTextView.setText(itemNotes);
-        itemAddedDateTextView.setText(itemAddedDate);
+        food = new FoodItem(
+                getIntent().getStringExtra("ItemName"),
+                getIntent().getStringExtra("ItemNotes"),
+                getIntent().getStringExtra("ItemAddedDate"),
+                getIntent().getStringExtra("ItemExpiration")
+        );
+        food.setId(getIntent().getLongExtra("ItemId", -1));
+        itemTitleTextView.setText(food.getName());
+        itemNameTextView.setText(food.getName());
+        itemExpirationTextView.setText(food.getExpiryDate());
+        itemNotesTextView.setText(food.getNote());
+        itemAddedDateTextView.setText(food.getDateAdded());
     }
 
     // When back button clicked
@@ -64,7 +66,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
             public void onClick(DialogInterface dialog, int which) {
-                helper.deleteItem(itemID);
+                helper.deleteItem(food.getId());
                 onbackButtonClicked(viewFromOuterClass);
             }
         });
@@ -74,5 +76,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
             }
         });
         alert.show();
+    }
+
+    public void onEditButtonClicked(View view){
+        Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+        intent.putExtra("userIntent", "editItem");
+        intent.putExtra("food", food);
+        startActivity(intent);
+
     }
 }

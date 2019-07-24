@@ -54,6 +54,7 @@
                 android:id="@+id/show_item_edit_button"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
+                android:onClick="onEditButtonClicked"
                 android:scaleType="fitCenter"
                 android:src="@drawable/edit_button" />
             <ImageButton

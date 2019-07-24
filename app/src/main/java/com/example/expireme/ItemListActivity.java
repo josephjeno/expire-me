@@ -1,14 +1,19 @@
 package com.example.expireme;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.ActionBar;
 import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 
@@ -20,6 +25,7 @@ import utils.SwipeToDeleteCallback;
 
 public class ItemListActivity extends AppCompatActivity implements CustomItemAdapter.ItemClickListener {
 
+
     // This is the view that displays the list of items
     RecyclerView recyclerView;
 
@@ -29,10 +35,25 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     CustomItemAdapter myAdapter;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Populate the data into the arrayList
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         items = dbHelper.getAllItems();

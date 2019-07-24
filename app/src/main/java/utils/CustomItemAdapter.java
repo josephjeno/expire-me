@@ -1,6 +1,7 @@
 package utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,9 +52,9 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         FoodItem item = items.get(position);
         holder.itemName.setText(item.getName());
         holder.itemExpiration.setText(item.getExpiryDate());
-        String countdownText = convertCountdownText(item.getDateExpiration());
-        holder.itemCountdown.setText(countdownText);
-        //TODO get countdown color
+        long diffInDays = differenceInDays(item.getDateExpiration());
+        holder.itemCountdown.setText(getCountdownText(diffInDays));
+        holder.itemCountdown.setTextColor(getCountdownColor(diffInDays));
     }
 
     @Override
@@ -69,26 +70,42 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         this.notifyDataSetChanged();
     }
 
-    // Returns difference between expiration date and today's date
-    private String convertCountdownText(Date expirationDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-
+    // Calculates difference between expiration date and today's date
+    private long differenceInDays(Date expirationDate) {
         Calendar calDate = new GregorianCalendar();
-// reset hour, minutes, seconds and millis
+        // reset hour, minutes, seconds and millis
         calDate.set(Calendar.HOUR_OF_DAY, 0);
         calDate.set(Calendar.MINUTE, 0);
         calDate.set(Calendar.SECOND, 0);
         calDate.set(Calendar.MILLISECOND, 0);
         Date currentDate = calDate.getTime();
         long diffInMillies = expirationDate.getTime() - currentDate.getTime();
-        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
-        if (diffInDays < 0) {
+    // Gets text to display for itemCountdown
+    private String getCountdownText(long diffInDays) {
+        if (diffInDays < 1) {
             return "!";
+        } else if (diffInDays == 1) {
+            return "1 day";
         } else if (diffInDays < 30){
             return diffInDays + " days";
+        } else if ((diffInDays / 30) == 1) {
+            return "1 month";
         } else {
             return (diffInDays / 30) + " months";
+        }
+    }
+
+    // Gets color to display for countdown text
+    private int getCountdownColor(long diffInDays) {
+        if (diffInDays < 1) {
+            return Color.RED;
+        } else if (diffInDays < 3){
+            return Color.rgb(235, 140, 52);
+        } else {
+            return Color.rgb(52, 235, 61);
         }
     }
 

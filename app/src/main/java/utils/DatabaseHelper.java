@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import utils.FoodItem;
 
@@ -96,6 +98,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             foodItem.setId(itemId);
             foodItems.add(foodItem);
         }
+        // now sort these items according to expiration date
+        Collections.sort(foodItems, new Comparator<FoodItem>() {
+            @Override
+            public int compare(FoodItem o1, FoodItem o2) {
+                return o1.getDateExpiration().compareTo(o2.getDateExpiration());
+            }
+        });
         return foodItems;
     }
 

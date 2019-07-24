@@ -2,6 +2,11 @@ package utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FoodItem implements Parcelable {
 
@@ -10,7 +15,19 @@ public class FoodItem implements Parcelable {
     private String note;
     private String dateAdded;
     private String expiryDate;
+    private Date dateExpiration;
 
+    private Date getDateFromString(String dateString) {
+        Date date;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        try {
+            date = sdf.parse(expiryDate);
+            return date;
+        } catch (ParseException e) {
+            Log.v("Exception", e.getLocalizedMessage());
+        }
+        return null;
+    }
 
     @Override
     public int describeContents() {
@@ -23,6 +40,7 @@ public class FoodItem implements Parcelable {
         note = in.readString();
         dateAdded = in.readString();
         expiryDate = in.readString();
+        dateExpiration = getDateFromString(expiryDate);
     }
 
     public static final Creator<FoodItem> CREATOR = new Creator<FoodItem>() {
@@ -51,6 +69,7 @@ public class FoodItem implements Parcelable {
         this.note = note;
         this.dateAdded = dateAdded;
         this.expiryDate = expiryDate;
+        this.dateExpiration = getDateFromString(expiryDate);
     }
 
     public String getName() {
@@ -92,4 +111,9 @@ public class FoodItem implements Parcelable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Date getDateExpiration() { return dateExpiration; }
+
+    private void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
+
 }

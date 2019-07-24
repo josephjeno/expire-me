@@ -80,23 +80,35 @@ public class AddItemActivity extends AppCompatActivity {
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // verify minimum-requirements data name+expiration were given
+                String itemName = itemNameTextView.getText().toString();
+                String itemExpirationDate = itemExpirationTextView.getText().toString();
+                Log.d("checkButton.OnClick", "name=" + itemName + "___" + itemExpirationDate + "___");
+                if (itemName.length() == 0 || itemExpirationDate.length() == 0) {
+                    Toast toast = Toast.makeText(
+                            getApplicationContext(),
+                            "Please indicate both Name and Expiration date!",
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
                 // add item to database
                 DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
                 if(userIntent == null){
                     FoodItem foodItem = new FoodItem(
-                            itemNameTextView.getText().toString(),
+                            itemName,
                             itemNotesTextView.getText().toString(),
                             itemAddedDateTextView.getText().toString(),
-                            itemExpirationTextView.getText().toString()
+                            itemExpirationDate
                     );
                     dbHelper.addFoodItem(foodItem);
                     onbackButtonClicked(view);
                 }else {
                     if(intentFood != null){
-                        intentFood.setName(itemNameTextView.getText().toString());
+                        intentFood.setName(itemName);
                         intentFood.setNote(itemNotesTextView.getText().toString());
                         intentFood.setDateAdded(itemAddedDateTextView.getText().toString());
-                        intentFood.setExpiryDate(itemExpirationTextView.getText().toString());
+                        intentFood.setExpiryDate(itemExpirationDate);
                         updateFood(intentFood, dbHelper, view);
                     }
                 }
@@ -161,16 +173,16 @@ public class AddItemActivity extends AppCompatActivity {
 
     public void updateFood(final FoodItem foodItem, final DatabaseHelper dbHelper, final View view){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Update Food Item!");
-        alert.setMessage("Are you sure you want to update this food item?");
+        alert.setTitle(foodItem.getName());
+        alert.setMessage("Are you sure you want to update " + foodItem.getName() +"?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                         dbHelper.updateItem(foodItem);
-                        String message = "The food item " + foodItem.getName() + " has been updated";
+                        String message = foodItem.getName() + " has been updated";
                         Toast toast = Toast.makeText(
-                        getApplicationContext(),
-                        message,
-                        Toast.LENGTH_LONG);
+                            getApplicationContext(),
+                            message,
+                            Toast.LENGTH_LONG);
                         toast.show();
                         onbackButtonClicked(view);
                     }

@@ -14,7 +14,9 @@ import com.example.expireme.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> {
@@ -49,7 +51,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         FoodItem item = items.get(position);
         holder.itemName.setText(item.getName());
         holder.itemExpiration.setText(item.getExpiryDate());
-        String countdownText = convertCountdownText(item.getExpiryDate());
+        String countdownText = convertCountdownText(item.getDateExpiration());
         holder.itemCountdown.setText(countdownText);
         //TODO get countdown color
     }
@@ -68,19 +70,20 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     }
 
     // Returns difference between expiration date and today's date
-    private String convertCountdownText(String date) {
+    private String convertCountdownText(Date expirationDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-        Date currentDate = new Date();
-        Date expirationDate = new Date(); // In case item expiration date isn't populated for some reason
-        try {
-            expirationDate = sdf.parse(date);
-        } catch (ParseException e) {
-            Log.v("Exception", e.getLocalizedMessage());
-        }
+
+        Calendar calDate = new GregorianCalendar();
+// reset hour, minutes, seconds and millis
+        calDate.set(Calendar.HOUR_OF_DAY, 0);
+        calDate.set(Calendar.MINUTE, 0);
+        calDate.set(Calendar.SECOND, 0);
+        calDate.set(Calendar.MILLISECOND, 0);
+        Date currentDate = calDate.getTime();
         long diffInMillies = expirationDate.getTime() - currentDate.getTime();
         long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-        if (diffInDays <= 0) {
+        if (diffInDays < 0) {
             return "!";
         } else if (diffInDays < 30){
             return diffInDays + " days";

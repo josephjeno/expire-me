@@ -12,12 +12,18 @@ import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
+
 import utils.CustomItemAdapter;
 import utils.DatabaseHelper;
 import utils.FoodItem;
@@ -57,6 +63,30 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         // Populate the data into the arrayList
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         items = dbHelper.getAllItems();
+        // remove items according to list type
+        String listType = getIntent().getStringExtra("ListType");
+        Log.d("ItemListActivity", "listType=" + listType);
+        if (!listType.equals("ALL")) {
+            Date currentDate = new Date();
+
+            ListIterator<FoodItem> listIterator = items.listIterator();
+            while(listIterator.hasNext()) {
+                FoodItem item = listIterator.next();
+                // check if result of student is "Fail"
+                long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
+                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (listType.equals("EXPIRED")) {
+                    if (diffInDays >= 0)
+                        listIterator.remove();
+                } else if (listType.equals("SOON")) {
+                    if (diffInDays > 3 || diffInDays < 0)
+                        listIterator.remove();
+                }
+            }
+
+        }
+
+
 
         // Connect the adapter to the list view
         recyclerView = findViewById(R.id.myRecyclerView);

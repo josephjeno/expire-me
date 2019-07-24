@@ -16,6 +16,19 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onAllItemsClicked(View view) {
         Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+        intent.putExtra("ListType", "ALL");
+        startActivity(intent);
+    }
+
+    public void onSoonToExpireClicked(View view) {
+        Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+        intent.putExtra("ListType", "SOON");
+        startActivity(intent);
+    }
+
+    public void onExpiredItemsClicked(View view) {
+        Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+        intent.putExtra("ListType", "EXPIRED");
         startActivity(intent);
     }
 

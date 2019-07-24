@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import utils.DatabaseHelper;
+import utils.FoodItem;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
@@ -23,10 +25,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView itemNameTextView;
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
+    TextView itemNotesTitleTextView;
     TextView itemAddedDateTextView;
     TextView itemAddedDateTitleTextView;
-    TextView itemNotesTitleTextView;
     private Long itemID;
+    FoodItem food;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -52,11 +55,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemTitleTextView = findViewById(R.id.item_title);
         itemNameTextView = findViewById(R.id.item_name);
         itemExpirationTextView = findViewById(R.id.item_expiration);
-        itemNotesTextView = findViewById(R.id.itemDetailsNoteText);
-        itemNotesTitleTextView = findViewById(R.id.itemDetailsNoteTitle);
-        itemAddedDateTextView = findViewById(R.id.itemDetailsPurchasedOnText);
-        itemAddedDateTitleTextView = findViewById(R.id.itemDetailsPurchasedOnTitle);
-
+        itemNotesTextView = findViewById(R.id.item_note);
+        itemAddedDateTextView = findViewById(R.id.item_purchased);
         //Extract resourceIDS
         String itemName = getIntent().getStringExtra("ItemName");
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
@@ -75,7 +75,14 @@ public class ItemDetailsActivity extends AppCompatActivity {
             itemAddedDateTitleTextView.setTextSize(0);
             itemAddedDateTextView.setTextSize(0);
         } else
-            itemAddedDateTextView.setText(itemAddedDate);
+            itemAddedDateTextView.setText(itemAddedDate);      
+        food = new FoodItem(
+                itemName,
+                itemNotes,
+                itemAddedDate,
+                itemExpiration
+        );
+        food.setId(itemID);
     }
 
     // When back button clicked
@@ -93,7 +100,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
             public void onClick(DialogInterface dialog, int which) {
-                helper.deleteItem(itemID);
+                helper.deleteItem(food.getId());
                 onbackButtonClicked(viewFromOuterClass);
             }
         });
@@ -103,5 +110,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
             }
         });
         alert.show();
+    }
+
+    public void onEditButtonClicked(View view){
+        Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+        intent.putExtra("userIntent", "editItem");
+        intent.putExtra("food", food);
+        startActivity(intent);
+
     }
 }

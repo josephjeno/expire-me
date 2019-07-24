@@ -24,7 +24,7 @@ import utils.FoodItem;
 
 public class AddItemActivity extends AppCompatActivity {
 
-    ImageButton backButton;
+//    ImageButton backButton;
     ImageButton checkButton;
 
     TextView itemTitleTextView;
@@ -74,7 +74,7 @@ public class AddItemActivity extends AppCompatActivity {
             populateFields(intentFood);
         }
 
-        backButton = findViewById(R.id.add_item_button_back);
+        //backButton = findViewById(R.id.add_item_button_back);
         checkButton = findViewById(R.id.add_item_check_button);
 
         checkButton.setOnClickListener(new View.OnClickListener() {

@@ -19,7 +19,7 @@ import utils.FoodItem;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
-    ImageButton backButton;
+    //ImageButton backButton;
 
     TextView itemTitleTextView;
     TextView itemNameTextView;
@@ -52,7 +52,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        backButton = findViewById(R.id.add_item_button_back);
+        //backButton = findViewById(R.id.add_item_button_back);
         itemTitleTextView = findViewById(R.id.item_title);
         itemNameTextView = findViewById(R.id.item_name);
         itemExpirationTextView = findViewById(R.id.item_expiration);

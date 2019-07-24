@@ -29,6 +29,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView itemAddedDateTextView;
     TextView itemAddedDateTitleTextView;
     private Long itemID;
+    String itemName;
     FoodItem food;
 
     @Override
@@ -55,10 +56,12 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemTitleTextView = findViewById(R.id.item_title);
         itemNameTextView = findViewById(R.id.item_name);
         itemExpirationTextView = findViewById(R.id.item_expiration);
-        itemNotesTextView = findViewById(R.id.item_note);
-        itemAddedDateTextView = findViewById(R.id.item_purchased);
+        itemNotesTitleTextView = findViewById(R.id.itemDetailsNoteTitle);
+        itemNotesTextView = findViewById(R.id.itemDetailsNoteText);
+        itemAddedDateTitleTextView = findViewById(R.id.itemDetailsPurchasedOnTitle);
+        itemAddedDateTextView = findViewById(R.id.itemDetailsPurchasedOnText);
         //Extract resourceIDS
-        String itemName = getIntent().getStringExtra("ItemName");
+        itemName = getIntent().getStringExtra("ItemName");
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
@@ -95,8 +98,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         // needs to be declared final to be accessed from inner class
         final View viewFromOuterClass = view;
-        alert.setTitle("Delete Food Item!");
-        alert.setMessage("Are you sure you want to delete?");
+        alert.setTitle(itemName);
+        alert.setMessage("Are you sure you want to delete " + itemName +"?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
             public void onClick(DialogInterface dialog, int which) {

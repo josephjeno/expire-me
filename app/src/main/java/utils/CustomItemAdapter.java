@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,11 +30,15 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // ArrayList with the item expiration data points to populate adapter
     private ArrayList<FoodItem> items;
 
+    // RecyclerView
+    private RecyclerView recyclerView;
+
     private ItemClickListener myClickListener;
 
-    public CustomItemAdapter(Context context, ArrayList<FoodItem> items) {
+    public CustomItemAdapter(Context context, ArrayList<FoodItem> items, RecyclerView recyclerView) {
         this.context = context;
         this.items = items;
+        this.recyclerView = recyclerView;
     }
 
     // Getter for context
@@ -56,6 +62,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemCountdown.setText(getCountdownText(diffInDays));
         holder.itemCountdown.setTextColor(getCountdownColor(diffInDays));
     }
+    
 
     @Override
     public int getItemCount() {
@@ -68,6 +75,12 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         dbHelper.deleteItem(items.get(position).getId());
         items.remove(position);
         this.notifyDataSetChanged();
+        showSnackbar();
+    }
+
+    public void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(recyclerView, "Test", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     // Calculates difference between expiration date and today's date

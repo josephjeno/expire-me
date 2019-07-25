@@ -104,7 +104,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     private int getCountdownColor(long diffInDays) {
         if (diffInDays < 0) {
             return Color.RED;
-        } else if (diffInDays < 3){
+        } else if (diffInDays <= 3){
             return Color.rgb(235, 140, 52);
         } else {
             return Color.rgb(52, 235, 61);

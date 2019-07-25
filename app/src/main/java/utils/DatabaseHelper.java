@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +64,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    private FoodItem getFoodItemFromCursor(Cursor cursor) {
+        Log.d("getFoodItemFromCursor", "count=" + cursor.getCount() );
+        long itemId = cursor.getLong(
+                cursor.getColumnIndexOrThrow(FoodItemEntry._ID));
+        String name = cursor.getString(
+                cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_FOOD_NAME));
+        String dateAdded = cursor.getString(
+                cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_DATE_ADDED));
+        String expiryDate = cursor.getString(
+                cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE));
+        String note = cursor.getString(
+                cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_NOTE));
+        FoodItem foodItem = new FoodItem(name, note, dateAdded, expiryDate);
+        foodItem.setId(itemId);
+        return foodItem;
+    }
+
+    public FoodItem getItemById(Long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] projection = {
+                BaseColumns._ID,
+                FoodItemEntry.COLUMN_NAME_FOOD_NAME,
+                FoodItemEntry.COLUMN_NAME_DATE_ADDED,
+                FoodItemEntry.COLUMN_NAME_EXPIRY_DATE,
+                FoodItemEntry.COLUMN_NAME_NOTE
+        };
+        String selection = FoodItemEntry._ID + "=?";
+        String[] selectionArgs = {id.toString()};
+        Log.d("getItemById", selection + id);
+        Cursor cursor = db.query(
+                FoodItemEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        cursor.moveToNext();
+        FoodItem foodItem = getFoodItemFromCursor(cursor);
+        Log.d("getItemById", foodItem.getName());
+        return foodItem;
+    }
+
     public ArrayList<FoodItem> getAllItems(){
         SQLiteDatabase db = this.getReadableDatabase();
         String[] projection = {
@@ -84,19 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         ArrayList<FoodItem> foodItems = new ArrayList<>();
         while (cursor.moveToNext()){
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(FoodItemEntry._ID));
-            String name = cursor.getString(
-                    cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_FOOD_NAME));
-            String dateadded = cursor.getString(
-                    cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_DATE_ADDED));
-            String expiryDate = cursor.getString(
-                    cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE));
-            String note = cursor.getString(
-                    cursor.getColumnIndexOrThrow(FoodItemEntry.COLUMN_NAME_NOTE));
-            FoodItem foodItem = new FoodItem(name, note, dateadded, expiryDate);
-            foodItem.setId(itemId);
-            foodItems.add(foodItem);
+            foodItems.add(getFoodItemFromCursor(cursor));
         }
         // now sort these items according to expiration date
         Collections.sort(foodItems, new Comparator<FoodItem>() {
@@ -107,7 +140,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         });
         return foodItems;
     }
-
 
     public boolean deleteItem(Long itemId){
         SQLiteDatabase db = this.getWritableDatabase();

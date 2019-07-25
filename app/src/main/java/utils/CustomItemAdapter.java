@@ -85,9 +85,11 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // Gets text to display for itemCountdown
     private String getCountdownText(long diffInDays) {
-        if (diffInDays < 1) {
+        if (diffInDays < 0) {
             return "!";
-        } else if (diffInDays == 1) {
+        } else if (diffInDays < 1) {
+            return "Today!";
+        }else if (diffInDays == 1) {
             return "1 day";
         } else if (diffInDays < 30){
             return diffInDays + " days";
@@ -100,7 +102,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // Gets color to display for countdown text
     private int getCountdownColor(long diffInDays) {
-        if (diffInDays < 1) {
+        if (diffInDays < 0) {
             return Color.RED;
         } else if (diffInDays < 3){
             return Color.rgb(235, 140, 52);

@@ -31,19 +31,24 @@ import utils.SwipeToDeleteCallback;
 
 public class ItemListActivity extends AppCompatActivity implements CustomItemAdapter.ItemClickListener {
 
+    static final int SHOW_ITEM = 0;
+    DatabaseHelper dbHelper;
 
     // This is the view that displays the list of items
     RecyclerView recyclerView;
+    ItemTouchHelper itemTouchHelper;
 
     // List of items
     ArrayList<FoodItem> items;
 
     CustomItemAdapter myAdapter;
+    String listType;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_OK, null);
                 finish();
                 return true;
         }
@@ -54,17 +59,11 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         return true;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private void getItems() {
         // Populate the data into the arrayList
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
         items = dbHelper.getAllItems();
         // remove items according to list type
-        String listType = getIntent().getStringExtra("ListType");
+        listType = getIntent().getStringExtra("ListType");
         Log.d("ItemListActivity", "listType=" + listType);
         if (listType != null && !listType.equals("ALL")) {
             Date currentDate = new Date();
@@ -83,21 +82,38 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
                         listIterator.remove();
                 }
             }
-
         }
+    }
 
+    private void setTitle(String listType) {
+        if (listType == null || listType.equals("ALL"))
+            getSupportActionBar().setTitle("All Items");
+        else if (listType.equals("SOON"))
+            getSupportActionBar().setTitle("Expiring Soon");
+        else if (listType.equals("EXPIRED"))
+            getSupportActionBar().setTitle("Expired Items");
+    }
 
-
-        // Connect the adapter to the list view
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_item_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = findViewById(R.id.myRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Populate the data into the arrayList
+        dbHelper = new DatabaseHelper(this);
+        getItems();
+
         myAdapter = new CustomItemAdapter(this, items);
         myAdapter.setClickListener(this);
         recyclerView.setAdapter(myAdapter);
 
         // Helper that controls item swipes (left to delete, right to edit, hold to select multiple)
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
+        itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
+        setTitle(listType);
     }
 
     // Navigates to Item Details screen when item is selected from the list
@@ -111,8 +127,27 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         intent.putExtra("ItemNotes", items.get(position).getNote());
         intent.putExtra("ItemAddedDate", items.get(position).getDateAdded());
         intent.putExtra("ItemId", items.get(position).getId());
-        startActivity(intent);
+        startActivityForResult(intent, SHOW_ITEM);
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
+        if (requestCode == SHOW_ITEM && resultCode == RESULT_OK) {
+
+            Log.d("onActivityResult", "calling setupAdapter");
+            /*
+            getItems();
+            myAdapter = new CustomItemAdapter(this, items);
+            myAdapter.setClickListener(this);
+            recyclerView.setAdapter(myAdapter);
+
+            // Helper that controls item swipes (left to delete, right to edit, hold to select multiple)
+            itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+            */
+        }
+    }
+
 
     // Navigates to Add Item screen when Add Item button is pressed
     public void onAddItemClicked(View view) {

@@ -102,6 +102,7 @@ public class AddItemActivity extends AppCompatActivity {
                             itemExpirationDate
                     );
                     dbHelper.addFoodItem(foodItem);
+                    // TODO: where to go back to from here
                     onbackButtonClicked(view);
                 }else {
                     if(intentFood != null){
@@ -109,7 +110,8 @@ public class AddItemActivity extends AppCompatActivity {
                         intentFood.setNote(itemNotesTextView.getText().toString());
                         intentFood.setDateAdded(itemAddedDateTextView.getText().toString());
                         intentFood.setExpiryDate(itemExpirationDate);
-                        updateFood(intentFood, dbHelper, view);
+                        dbHelper.updateItem(intentFood);
+                        finishAddItem();
                     }
                 }
             }
@@ -141,6 +143,11 @@ public class AddItemActivity extends AppCompatActivity {
         itemNotesTextView.setText(intentFood.getNote());
         itemAddedDateTextView.setText(intentFood.getDateAdded());
         itemExpirationTextView.setText(intentFood.getExpiryDate());
+    }
+
+    private void finishAddItem() {
+        setResult(RESULT_OK, null);
+        finish();
     }
 
     // When back button clicked

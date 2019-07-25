@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,7 @@ import utils.FoodItem;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
-    //ImageButton backButton;
+    static final int EDIT_ITEM = 0;
 
     TextView itemTitleTextView;
     TextView itemNameTextView;
@@ -31,6 +32,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private Long itemID;
     String itemName;
     FoodItem food;
+    DatabaseHelper dbHelper;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -46,10 +48,27 @@ public class ItemDetailsActivity extends AppCompatActivity {
         return true;
     }
 
+    private void populateComponents(FoodItem foodItem) {
+        itemTitleTextView.setText("             ");
+        itemNameTextView.setText(foodItem.getName());
+        itemExpirationTextView.setText(foodItem.getExpiryDate());
+        if (foodItem.getNote().length() == 0) {
+            itemNotesTitleTextView.setTextSize(0);
+            itemNotesTextView.setTextSize(0);
+        } else
+            itemNotesTextView.setText(foodItem.getNote());
+        if (foodItem.getDateAdded().length() == 0) {
+            itemAddedDateTitleTextView.setTextSize(0);
+            itemAddedDateTextView.setTextSize(0);
+        } else
+            itemAddedDateTextView.setText(foodItem.getDateAdded());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        dbHelper = new DatabaseHelper(getApplicationContext());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //backButton = findViewById(R.id.add_item_button_back);
@@ -66,19 +85,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         String itemNotes = getIntent().getStringExtra("ItemNotes");
         String itemAddedDate = getIntent().getStringExtra("ItemAddedDate");
         itemID = getIntent().getLongExtra("ItemId", -1);
-        itemTitleTextView.setText("             ");
-        itemNameTextView.setText(itemName);
-        itemExpirationTextView.setText(itemExpiration);
-        if (itemNotes.length() == 0) {
-            itemNotesTitleTextView.setTextSize(0);
-            itemNotesTextView.setTextSize(0);
-        } else
-            itemNotesTextView.setText(itemNotes);
-        if (itemAddedDate.length() == 0) {
-            itemAddedDateTitleTextView.setTextSize(0);
-            itemAddedDateTextView.setTextSize(0);
-        } else
-            itemAddedDateTextView.setText(itemAddedDate);      
+
         food = new FoodItem(
                 itemName,
                 itemNotes,
@@ -86,9 +93,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 itemExpiration
         );
         food.setId(itemID);
+        populateComponents(food);
     }
 
     // When back button clicked
+    // TODO: remove this
     public void onbackButtonClicked(View view) {
         Intent explicitIntent = new Intent(getApplicationContext(), ItemListActivity.class);
         startActivity(explicitIntent);
@@ -101,9 +110,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
         alert.setTitle(itemName);
         alert.setMessage("Are you sure you want to delete " + itemName +"?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
+            //DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
             public void onClick(DialogInterface dialog, int which) {
-                helper.deleteItem(food.getId());
+                dbHelper.deleteItem(food.getId());
                 onbackButtonClicked(viewFromOuterClass);
             }
         });
@@ -119,7 +128,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
         intent.putExtra("userIntent", "editItem");
         intent.putExtra("food", food);
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_ITEM);
+    }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", "itemID=" + itemID + " requestCode="+ requestCode + " resultCode=" + resultCode);
+        if (requestCode == EDIT_ITEM && resultCode == RESULT_OK) {
+            FoodItem dbFoodItem = dbHelper.getItemById(itemID);
+            Log.d("onActivityResult", "itemID=" + itemID + " dbName="+ dbFoodItem.getName());
+            populateComponents(dbFoodItem);
+        }
     }
 }

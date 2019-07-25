@@ -103,7 +103,8 @@ public class AddItemActivity extends AppCompatActivity {
                     );
                     dbHelper.addFoodItem(foodItem);
                     // TODO: where to go back to from here
-                    onbackButtonClicked(view);
+                    //onbackButtonClicked(view);
+                    finishAddItem();
                 }else {
                     if(intentFood != null){
                         intentFood.setName(itemName);

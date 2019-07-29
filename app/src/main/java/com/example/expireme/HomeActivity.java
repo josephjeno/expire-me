@@ -106,11 +106,13 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         // Initialize Places.
-        Places.initialize(getApplicationContext(), apiKey);
+        //Places.initialize(getApplicationContext(), apiKey);
 
 // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
+        //PlacesClient placesClient = Places.createClient(this);
 
+        // https://maps.googleapis.com/maps/api/place/nearbysearch/output?
+        // key=apiKey&location=-100.33,77.44&rankby=distance&type=supermarket
 
 
 

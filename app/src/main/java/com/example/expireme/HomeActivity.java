@@ -18,9 +18,57 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
+
 public class HomeActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient  fusedLocationClient;
+    private JSONObject jsonObject;
+    String apiKey = ""; // TODO: will be committed to release version only
+
+    {
+        try {
+            jsonObject = new JSONObject("{\n" +
+                        "   \"html_attributions\" : [],\n" +
+                        "   \"next_page_token\" : \"CvQB7AAAAPzh-eaLooQJ1gxg88_EmHbqLfFt45aahApotdjuy70UqAyx07tuoRCpVM2gbDfpf8YfIbkZ96bzIo8T-6x3a-K8GXlgEX9_gULyzmfsGAhiK7yvc9N_P7nGqyS3pOSCxPAHYLZ7Id5zabLwXOllviOPItH5788c1A-7K-a8IfLp9aGn94ikX-ei40wKlIEGr8SWfle5Unmk0L_qIZOD8Xn_yNa3a4JFPby2affcEi0Kg1eEkEkkngSL-T8wXkjLS82gl_1FlmfMSvRvok5GJ90gmy72yhB5j88wyZLlrZvnVqwuXD0bmEMD_9eEwLm4pBIQA1GcTSIXRswedriQX3gTPBoUEE-rgsd8cPKvpg9ugEKrIy-o31Q\",\n" +
+                        "   \"results\" : [\n" +
+                        "      {\n" +
+                        "         \"geometry\" : {\n" +
+                        "            \"location\" : {\n" +
+                        "               \"lat\" : 40.7477385,\n" +
+                        "               \"lng\" : -73.98689379999999\n" +
+                        "            },\n" +
+                        "            \"viewport\" : {\n" +
+                        "               \"northeast\" : {\n" +
+                        "                  \"lat\" : 40.749029,\n" +
+                        "                  \"lng\" : -73.98506640000001\n" +
+                        "               },\n" +
+                        "               \"southwest\" : {\n" +
+                        "                  \"lat\" : 40.7465661,\n" +
+                        "                  \"lng\" : -73.9883493\n" +
+                        "               }\n" +
+                        "            }\n" +
+                        "         },\n" +
+                        "         \"icon\" : \"http://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png\",\n" +
+                        "         \"id\" : \"e175a5f113997bf0b6515718a67ce6cabc821bf4\",\n" +
+                        "         \"name\" : \"Korea Town\",\n" +
+                        "         \"place_id\" : \"ChIJ_f1FDqlZwokRqCItRNuQIKs\",\n" +
+                        "         \"reference\" : \"CpQBiAAAAKjvKpniYmo7fcXUlXZi0rwKJIObZ2YdZfHW1oN2hYqWZBlJcfbbmbCe9s68497cdtEoOQalVthvJAS7A92EI1o4qXuxhonTaA7UOjcRS30xm4VNmvFFSDMjVx5B1nxWr0dx8mSsRY3ygbWw1d1-Tgxr_sO_LE8bsoRzezYlGM25BRq-6QCrzrzsWqu07-UIqhIQjFSlTMx4T9RqZAX1GCkevxoU4be-kyQ5hudhV8fnI2GpPWq-MFA\",\n" +
+                        "         \"scope\" : \"GOOGLE\",\n" +
+                        "         \"types\" : [ \"neighborhood\", \"political\" ],\n" +
+                        "         \"vicinity\" : \"Manhattan\"\n" +
+                        "      },\n" +
+                        "     ],\n" +
+                        "  status: \"OK\"\n" +
+                        "}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +105,12 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), apiKey);
+
+// Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(this);
+
 
 
 
@@ -85,3 +139,4 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
+

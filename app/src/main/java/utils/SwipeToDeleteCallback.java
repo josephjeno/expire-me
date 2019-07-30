@@ -24,8 +24,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     public SwipeToDeleteCallback(CustomItemAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         myAdapter = adapter;
-        icon = ContextCompat.getDrawable(myAdapter.getContext(),
-                R.drawable.delete_button);
+        icon = ContextCompat.getDrawable(myAdapter.getContext(), R.drawable.delete_button);
         background = new ColorDrawable(Color.RED);
     }
 
@@ -77,6 +76,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         icon.draw(c);
     }
 
+    // Items in list can't be moved, are sorted by date
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         return false;

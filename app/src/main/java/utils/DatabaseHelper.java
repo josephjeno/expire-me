@@ -11,6 +11,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
 
 import utils.FoodItem;
 
@@ -66,6 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private FoodItem getFoodItemFromCursor(Cursor cursor) {
         Log.d("getFoodItemFromCursor", "count=" + cursor.getCount() );
+        if (cursor.getCount() == 0) { return null; }
         long itemId = cursor.getLong(
                 cursor.getColumnIndexOrThrow(FoodItemEntry._ID));
         String name = cursor.getString(
@@ -139,6 +143,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         });
         return foodItems;
+    }
+
+    // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")
+    public ArrayList<FoodItem> getFilteredItems(String listType) {
+        // Populate the data into the arrayList
+        ArrayList<FoodItem> items = getAllItems();
+        // remove items according to list type
+        Log.d("ItemListActivity", "listType=" + listType);
+        if (listType != null && !listType.equals("ALL")) {
+            Date currentDate = new Date();
+
+            ListIterator<FoodItem> listIterator = items.listIterator();
+            while(listIterator.hasNext()) {
+                FoodItem item = listIterator.next();
+                // check if result of student is "Fail"
+                long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
+                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (listType.equals("EXPIRED")) {
+                    if (diffInDays >= 0)
+                        listIterator.remove();
+                } else if (listType.equals("SOON")) {
+                    if (diffInDays > 3 || diffInDays < 0)
+                        listIterator.remove();
+                }
+            }
+        }
+        return items;
     }
 
     public boolean deleteItem(Long itemId){

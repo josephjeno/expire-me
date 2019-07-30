@@ -2,7 +2,6 @@ package utils;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
+
 
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> {
 
@@ -28,20 +22,52 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // ArrayList with the item expiration data points to populate adapter
     private ArrayList<FoodItem> items;
 
+    // Database helper
+    private DatabaseHelper dbHelper;
+
+    // Filter for item list ("ALL", "SOON", "EXPIRED")
+    private String listType;
+
     private ItemClickListener myClickListener;
 
-    public CustomItemAdapter(Context context, ArrayList<FoodItem> items) {
+    public CustomItemAdapter(Context context, String listType) {
         this.context = context;
-        this.items = items;
+        this.listType = listType;
+
+        dbHelper = new DatabaseHelper(context);
+        this.items = dbHelper.getFilteredItems(listType);
     }
+
+    // GETTER/SETTER METHODS
 
     // Getter for context
     public Context getContext() {
         return context;
     }
 
+    // Get FoodItem at given position
+    public FoodItem getItem(int position) {
+        return items.get(position);
+    }
 
+    // DATABASE METHODS
 
+    // Refreshes list of items
+    public void refreshItems() {
+        this.items = dbHelper.getFilteredItems(listType);
+        notifyDataSetChanged();
+    }
+
+    // Deletes item from DB and list and refreshes view
+    public void deleteItem(int position) {
+        dbHelper.deleteItem(items.get(position).getId());
+        items.remove(position);
+        this.notifyDataSetChanged();
+    }
+
+    // RECYCLERVIEW ADAPTER OVERRIDE METHODS
+
+    @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_list_adapter_item,parent,false);
         return new MyViewHolder(view);
@@ -52,9 +78,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         FoodItem item = items.get(position);
         holder.itemName.setText(item.getName());
         holder.itemExpiration.setText(item.getExpiryDate());
-        long diffInDays = differenceInDays(item.getDateExpiration());
-        holder.itemCountdown.setText(getCountdownText(diffInDays));
-        holder.itemCountdown.setTextColor(getCountdownColor(diffInDays));
+        holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
+        holder.itemCountdown.setTextColor(getCountdownColor(item.daysUntilExpiration()));
     }
 
     @Override
@@ -62,26 +87,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         return items.size();
     }
 
-    // Deletes item from DB and list and refreshes view
-    public void deleteItem(int position) {
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        dbHelper.deleteItem(items.get(position).getId());
-        items.remove(position);
-        this.notifyDataSetChanged();
-    }
-
-    // Calculates difference between expiration date and today's date
-    private long differenceInDays(Date expirationDate) {
-        Calendar calDate = new GregorianCalendar();
-        // reset hour, minutes, seconds and millis
-        calDate.set(Calendar.HOUR_OF_DAY, 0);
-        calDate.set(Calendar.MINUTE, 0);
-        calDate.set(Calendar.SECOND, 0);
-        calDate.set(Calendar.MILLISECOND, 0);
-        Date currentDate = calDate.getTime();
-        long diffInMillies = expirationDate.getTime() - currentDate.getTime();
-        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-    }
+    // HELPER METHODS
 
     // Gets text to display for itemCountdown
     private String getCountdownText(long diffInDays) {

@@ -1,14 +1,15 @@
 package utils;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
-public class FoodItem implements Parcelable {
+public class FoodItem {
 
     private Long id;
     private String name;
@@ -17,59 +18,12 @@ public class FoodItem implements Parcelable {
     private String expiryDate;
     private Date dateExpiration;
 
-    private Date getDateFromString(String dateString) {
-        Date date;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-        try {
-            date = sdf.parse(expiryDate);
-            return date;
-        } catch (ParseException e) {
-            Log.v("Exception", e.getLocalizedMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public int describeContents() {
-        return hashCode();
-    }
-
-    public FoodItem(Parcel in){
-        id = in.readLong();
-        name = in.readString();
-        note = in.readString();
-        dateAdded = in.readString();
-        expiryDate = in.readString();
-        dateExpiration = getDateFromString(expiryDate);
-    }
-
-    public static final Creator<FoodItem> CREATOR = new Creator<FoodItem>() {
-        @Override
-        public FoodItem createFromParcel(Parcel in) {
-            return new FoodItem(in);
-        }
-
-        @Override
-        public FoodItem[] newArray(int size) {
-            return new FoodItem[size];
-        }
-    };
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
-        parcel.writeString(name);
-        parcel.writeString(note);
-        parcel.writeString(dateAdded);
-        parcel.writeString(expiryDate);
-    }
-
     public FoodItem(String name, String note, String dateAdded, String expiryDate) {
         this.name = name;
         this.note = note;
         this.dateAdded = dateAdded;
         this.expiryDate = expiryDate;
-        this.dateExpiration = getDateFromString(expiryDate);
+        this.dateExpiration = getDateFromString();
     }
 
     public String getName() {
@@ -114,6 +68,30 @@ public class FoodItem implements Parcelable {
 
     public Date getDateExpiration() { return dateExpiration; }
 
-    private void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
+    public void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
+
+    // Converts String into date
+    private Date getDateFromString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        try {
+            return sdf.parse(expiryDate);
+        } catch (ParseException e) {
+            Log.v("Exception", e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    // Returns days between item expiration date and today's date
+    public long daysUntilExpiration() {
+        Calendar calDate = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        calDate.set(Calendar.HOUR_OF_DAY, 0);
+        calDate.set(Calendar.MINUTE, 0);
+        calDate.set(Calendar.SECOND, 0);
+        calDate.set(Calendar.MILLISECOND, 0);
+        Date currentDate = calDate.getTime();
+        long diffInMillies = this.dateExpiration.getTime() - currentDate.getTime();
+        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
 }

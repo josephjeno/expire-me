@@ -128,7 +128,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     public void onEditButtonClicked(View view){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
         intent.putExtra("userIntent", "editItem");
-        intent.putExtra("food", food);
+        intent.putExtra("food", itemID);
         startActivityForResult(intent, EDIT_ITEM);
     }
 

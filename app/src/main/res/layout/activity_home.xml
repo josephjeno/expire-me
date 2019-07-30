@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,60 +12,72 @@
 
     <TextView
         android:id="@+id/viewAllItemsButton"
-        android:layout_width="390dp"
-        android:layout_height="128dp"
-        android:layout_margin="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="370dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:background="@drawable/all_items_icon"
         android:onClick="onAllItemsClicked"
-        android:padding="20dp"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
     <TextView
         android:id="@+id/viewSoonToExpireItemsButton"
-        android:layout_width="390dp"
-        android:layout_height="121dp"
-        android:layout_margin="10dp"
-        android:layout_marginTop="13dp"
+        android:layout_width="370dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:background="@drawable/soon_to_expire_icon"
         android:onClick="onSoonToExpireClicked"
-        android:padding="20dp"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/viewExpiredItemsButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewAllItemsButton" />
+        />
 
     <TextView
         android:id="@+id/viewExpiredItemsButton"
-        android:layout_width="397dp"
-        android:layout_height="121dp"
-        android:layout_margin="10dp"
-        android:layout_marginTop="136dp"
+        android:layout_width="370dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:background="@drawable/expired_icon"
         android:onClick="onExpiredItemsClicked"
-        android:padding="20dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewSoonToExpireItemsButton" />
+        />
 
-    <Button
-        android:id="@+id/addItemButton"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/button_add"
-        android:gravity="right"
-        android:onClick="onAddItemClicked"
-        android:padding="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="294dp"
+            android:layout_height="70dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="20sp"
+            android:text="Location Info will be here"
+            android:background="#FFFFFF"
+            />
+
+
+        <Button
+            android:id="@+id/addItemButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="onAddItemClicked"
+            android:padding="15dp"
+            android:background="@drawable/button_add"
+            android:layout_gravity="right"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>
 

@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
+
+import java.text.DecimalFormat;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -75,6 +78,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        final TextView locationTextView = findViewById(R.id.locationTextView);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION )
                 == PackageManager.PERMISSION_GRANTED ) {
@@ -86,7 +90,12 @@ public class HomeActivity extends AppCompatActivity {
                             // Got last known location. In some rare situations this can be null.
                             Log.e("getLastLocation", "success");
                             if (location != null) {
-                                // Logic to handle location object
+                                DecimalFormat df = new DecimalFormat("####.####");
+                                double longitude = location.getLongitude();
+                                double latitude = location.getLatitude();
+                                Log.d("addOnSuccessListener",
+                                        "lon=" + df.format(longitude) + " lat=" + df.format(latitude));
+                                locationTextView.setText("Longitude=" + df.format(longitude) + "\nLatitude=" + df.format(latitude));
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -102,7 +111,6 @@ public class HomeActivity extends AppCompatActivity {
             });
         } else {
             Log.e("getLastLocation", "no permissions");
-
         }
 
         // Initialize Places.

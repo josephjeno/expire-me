@@ -17,6 +17,7 @@ import utils.FoodItem;
 public class ItemDetailsActivity extends AppCompatActivity {
 
     static final int EDIT_ITEM = 0;
+    boolean requestRefresh = false;
 
     TextView itemNameTextView;
     TextView itemExpirationTextView;
@@ -73,7 +74,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_OK, null);
+                if (requestRefresh)
+                    setResult(RESULT_OK);
+                else
+                    setResult(RESULT_CANCELED);
                 finish();
                 return true;
             case R.id.show_item_edit_button:
@@ -141,6 +145,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult", "itemID=" + itemID + " requestCode="+ requestCode + " resultCode=" + resultCode);
         if (requestCode == EDIT_ITEM && resultCode == RESULT_OK) {
+            requestRefresh = true;
             FoodItem dbFoodItem = dbHelper.getItemById(itemID);
             Log.d("onActivityResult", "itemID=" + itemID + " dbName="+ dbFoodItem.getName());
             populateComponents(dbFoodItem);

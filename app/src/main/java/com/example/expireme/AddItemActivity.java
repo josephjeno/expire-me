@@ -24,10 +24,8 @@ import utils.FoodItem;
 
 public class AddItemActivity extends AppCompatActivity {
 
-//    ImageButton backButton;
     ImageButton checkButton;
 
-    TextView itemTitleTextView;
     TextView itemNameTextView;
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
@@ -44,20 +42,6 @@ public class AddItemActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -65,7 +49,6 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        itemTitleTextView = findViewById(R.id.item_title_text);
         itemNameTextView = findViewById(R.id.add_item_name);
         itemExpirationTextView = findViewById(R.id.editTextExpirationDate);
         itemNotesTextView = findViewById(R.id.add_item_notes);
@@ -79,6 +62,9 @@ public class AddItemActivity extends AppCompatActivity {
         if(foodItemKey != -1){
             foodItem = dbHelper.getItemById(foodItemKey);
             populateFields(foodItem);
+            getSupportActionBar().setTitle("Edit Item");
+        } else {
+            getSupportActionBar().setTitle("Add new Item");
         }
 
         //backButton = findViewById(R.id.add_item_button_back);
@@ -103,9 +89,31 @@ public class AddItemActivity extends AppCompatActivity {
         calendar=Calendar.getInstance();
         Log.d("AddItemActivity", "onCreate");
     }
+
+    // Used to display custom Action Bar (with buttons)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_add_item_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // Used to handle custom Action Bar button clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.add_item_check_button:
+                onCheckButtonClicked();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void populateFields(FoodItem intentFood) {
 
-        itemTitleTextView.setText(intentFood.getName());
         itemNameTextView.setText(intentFood.getName());
         itemNotesTextView.setText(intentFood.getNote());
         itemAddedDateTextView.setText(intentFood.getDateAdded());
@@ -117,13 +125,7 @@ public class AddItemActivity extends AppCompatActivity {
         finish();
     }
 
-    // When back button clicked
-    public void onbackButtonClicked(View view) {
-        Intent explicitIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-        startActivity(explicitIntent);
-    }
-
-    public void onCheckButtonClicked(View view) {
+    public void onCheckButtonClicked() {
         // verify minimum-requirements data name+expiration were given
         String itemName = itemNameTextView.getText().toString();
         String itemExpirationDate = itemExpirationTextView.getText().toString();
@@ -145,8 +147,6 @@ public class AddItemActivity extends AppCompatActivity {
                     itemExpirationDate
             );
             dbHelper.addFoodItem(foodItem);
-            // TODO: where to go back to from here
-            //onbackButtonClicked(view);
             finishAddItem();
         }else {
             if(foodItem != null){
@@ -195,7 +195,6 @@ public class AddItemActivity extends AppCompatActivity {
                             message,
                             Toast.LENGTH_LONG);
                         toast.show();
-                        onbackButtonClicked(view);
                     }
                 });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

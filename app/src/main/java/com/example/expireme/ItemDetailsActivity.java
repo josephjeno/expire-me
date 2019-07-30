@@ -9,11 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import utils.DatabaseHelper;
 import utils.FoodItem;
@@ -22,7 +18,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     static final int EDIT_ITEM = 0;
 
-    TextView itemTitleTextView;
     TextView itemNameTextView;
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
@@ -35,51 +30,20 @@ public class ItemDetailsActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                setResult(RESULT_OK, null);
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    private void populateComponents(FoodItem foodItem) {
-        itemTitleTextView.setText("             ");
-        itemNameTextView.setText(foodItem.getName());
-        itemExpirationTextView.setText(foodItem.getExpiryDate());
-        if (foodItem.getNote().length() == 0) {
-            itemNotesTitleTextView.setTextSize(0);
-            itemNotesTextView.setTextSize(0);
-        } else
-            itemNotesTextView.setText(foodItem.getNote());
-        if (foodItem.getDateAdded().length() == 0) {
-            itemAddedDateTitleTextView.setTextSize(0);
-            itemAddedDateTextView.setTextSize(0);
-        } else
-            itemAddedDateTextView.setText(foodItem.getDateAdded());
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         dbHelper = new DatabaseHelper(getApplicationContext());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Item Details");
 
-        //backButton = findViewById(R.id.add_item_button_back);
-        itemTitleTextView = findViewById(R.id.item_title);
         itemNameTextView = findViewById(R.id.item_name);
         itemExpirationTextView = findViewById(R.id.item_expiration);
         itemNotesTitleTextView = findViewById(R.id.itemDetailsNoteTitle);
         itemNotesTextView = findViewById(R.id.itemDetailsNoteText);
         itemAddedDateTitleTextView = findViewById(R.id.itemDetailsPurchasedOnTitle);
         itemAddedDateTextView = findViewById(R.id.itemDetailsPurchasedOnText);
+
         //Extract resourceIDS
         itemName = getIntent().getStringExtra("ItemName");
         String itemExpiration = getIntent().getStringExtra("ItemExpiration");
@@ -97,24 +61,41 @@ public class ItemDetailsActivity extends AppCompatActivity {
         populateComponents(food);
     }
 
-    // When back button clicked
-    // TODO: remove this
-    public void onbackButtonClicked(View view) {
-        Intent explicitIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-        startActivity(explicitIntent);
+    // Used to display custom Action Bar (with buttons)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_details_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    public void onDeleteButtonClicked(View view){
+    // Used to handle custom Action Bar button clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(RESULT_OK, null);
+                finish();
+                return true;
+            case R.id.show_item_edit_button:
+                onEditButtonClicked();
+                break;
+            case R.id.show_item_delete_button:
+                onDeleteButtonClicked();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // When Delete Button is clicked
+    public void onDeleteButtonClicked(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        // needs to be declared final to be accessed from inner class
-        final View viewFromOuterClass = view;
         alert.setTitle(itemName);
         alert.setMessage("Are you sure you want to delete " + itemName +"?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             //DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
             public void onClick(DialogInterface dialog, int which) {
                 dbHelper.deleteItem(food.getId());
-                onbackButtonClicked(viewFromOuterClass);
+                finish();
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -125,13 +106,38 @@ public class ItemDetailsActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public void onEditButtonClicked(View view){
+    // When Edit Button is clicked
+    public void onEditButtonClicked(){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
         intent.putExtra("userIntent", "editItem");
         intent.putExtra("food", itemID);
         startActivityForResult(intent, EDIT_ITEM);
     }
 
+    private void populateComponents(FoodItem foodItem) {
+        itemNameTextView.setText(foodItem.getName());
+        itemExpirationTextView.setText(foodItem.getExpiryDate());
+
+        if (foodItem.getNote().length() == 0) {
+            itemNotesTitleTextView.setTextSize(0);
+            itemNotesTextView.setTextSize(0);
+        } else {
+            itemNotesTextView.setText(foodItem.getNote());
+            itemNotesTitleTextView.setTextSize(25);
+            itemNotesTextView.setTextSize(30);
+        }
+
+        if (foodItem.getDateAdded().length() == 0) {
+            itemAddedDateTitleTextView.setTextSize(0);
+            itemAddedDateTextView.setTextSize(0);
+        } else {
+            itemAddedDateTextView.setText(foodItem.getDateAdded());
+            itemAddedDateTitleTextView.setTextSize(25);
+            itemAddedDateTextView.setTextSize(30);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult", "itemID=" + itemID + " requestCode="+ requestCode + " resultCode=" + resultCode);
         if (requestCode == EDIT_ITEM && resultCode == RESULT_OK) {

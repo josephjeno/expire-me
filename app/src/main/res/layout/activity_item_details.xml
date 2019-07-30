@@ -5,145 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
+    android:orientation="vertical"
+    android:layout_margin="30dp"
     tools:context=".ItemDetailsActivity">
 
-
-
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="1"
+    <TextView
+        android:id="@+id/show_item_text1"
+        android:text="@string/show_item_name"
+        android:textSize="30sp"
+        android:layout_gravity="left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/show_item_name_hint" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="6"
+    <TextView
+        android:id="@+id/show_item_text2"
+        android:text="@string/show_item_expiration_date"
+        android:paddingTop="40dp"
+        android:textSize="30sp"
+        android:layout_gravity="left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/item_expiration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="@string/show_item_expiration_date_hint" />
 
-            <TextView
-                android:id="@+id/show_item_text1"
-                android:text="@string/show_item_name"
-                android:textSize="30sp"
-                android:layout_gravity="left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-
-            <TextView
-                android:id="@+id/item_title"
-                android:layout_width="164dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:hint=""
-                android:textColor="#228b22"
-                android:textSize="40sp"
-                android:textStyle="bold" />
-
-            <ImageButton
-                android:id="@+id/show_item_edit_button"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:onClick="onEditButtonClicked"
-                android:scaleType="fitCenter"
-                android:src="@drawable/edit_button" />
-            <ImageButton
-                android:id="@+id/show_item_delete_button"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:scaleType="fitCenter"
-                android:onClick="onDeleteButtonClicked"
-                android:src="@drawable/delete_button" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/item_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:inputType="text"
-            android:hint="@string/show_item_name_hint" />
-
-        <TextView
-            android:id="@+id/show_item_text2"
-            android:text="@string/show_item_expiration_date"
-            android:paddingTop="40dp"
-            android:textSize="30sp"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/item_expiration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:inputType="number"
-            android:hint="@string/show_item_expiration_date_hint" />
-
-        <TextView
-            android:id="@+id/itemDetailsNoteTitle"
-            android:text="@string/show_item_note"
-            android:paddingTop="40dp"
-            android:textSize="30sp"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/itemDetailsNoteText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:textSize="30sp"
-            android:ems="10"
-            android:inputType="text"
-            android:hint="@string/show_item_note_hint" />
-        <TextView
-            android:id="@+id/itemDetailsPurchasedOnTitle"
-            android:text="@string/show_item_purchased_on"
-            android:paddingTop="40dp"
-            android:textSize="30sp"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/itemDetailsPurchasedOnText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:textSize="30sp"
-            android:ems="10"
-            android:inputType="number"
-            android:hint="@string/show_item_purchased_on_hint" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="1"
+    <TextView
+        android:id="@+id/itemDetailsNoteTitle"
+        android:text="@string/show_item_note"
+        android:paddingTop="40dp"
+        android:textSize="30sp"
+        android:layout_gravity="left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/itemDetailsNoteText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="30sp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/show_item_note_hint" />
+    <TextView
+        android:id="@+id/itemDetailsPurchasedOnTitle"
+        android:text="@string/show_item_purchased_on"
+        android:paddingTop="40dp"
+        android:textSize="30sp"
+        android:layout_gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/itemDetailsPurchasedOnText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="30sp"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="@string/show_item_purchased_on_hint" />
 
 </LinearLayout>

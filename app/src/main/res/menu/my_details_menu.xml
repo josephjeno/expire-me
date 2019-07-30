@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/show_item_edit_button"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/edit_button"
+        />
+    <item
+        android:id="@+id/show_item_delete_button"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/delete_button"
+        />
+</menu>

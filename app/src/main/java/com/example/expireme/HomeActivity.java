@@ -2,8 +2,10 @@ package com.example.expireme;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -32,6 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     private FusedLocationProviderClient  fusedLocationClient;
     private JSONObject jsonObject;
     String apiKey = ""; // TODO: will be committed to release version only
+    static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    TextView locationTextView;
 
     {
         try {
@@ -78,52 +82,78 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        final TextView locationTextView = findViewById(R.id.locationTextView);
+        initLocation();
+    }
+
+    private void askUserForPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateLocation();
+            } else {
+                Log.e("getLastLocation", "User did not grant permissions");
+            }
+        }
+    }
+
+    private void updateLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION )
-                == PackageManager.PERMISSION_GRANTED ) {
-            Log.e("getLastLocation", "GOT permissions");
+        try {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            Log.e("getLastLocation", "success");
+                            // most common reason for location to be null is on emulators, location was never used before
+                            Log.d("getLastLocation", "success");
                             if (location != null) {
-                                DecimalFormat df = new DecimalFormat("####.####");
+                                DecimalFormat lonlatFormat = new DecimalFormat("####.####");
                                 double longitude = location.getLongitude();
                                 double latitude = location.getLatitude();
-                                Log.d("addOnSuccessListener",
-                                        "lon=" + df.format(longitude) + " lat=" + df.format(latitude));
-                                locationTextView.setText("Longitude=" + df.format(longitude) + "\nLatitude=" + df.format(latitude));
-                            }
+                                Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
+                                locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
+                            } else
+                                Log.d("getLastLocation", "location is null");
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("getLastLocation", "fail");
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Log.e("getLastLocation", "complete");
+                    Log.e("getLastLocation", "failed");
                 }
             });
+        } catch (SecurityException e) {
+            // this is just that the getLastLocation() won't complain
+        }
+    }
+
+    private void initLocation() {
+        locationTextView = findViewById(R.id.locationTextView);
+        if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION )
+                == PackageManager.PERMISSION_GRANTED ) {
+            Log.e("getLastLocation", "GOT permissions");
+            updateLocation();
         } else {
             Log.e("getLastLocation", "no permissions");
+            askUserForPermission();
         }
+    }
 
+    private void initPlaces() {
         // Initialize Places.
         //Places.initialize(getApplicationContext(), apiKey);
 
-// Create a new Places client instance.
+        // Create a new Places client instance.
         //PlacesClient placesClient = Places.createClient(this);
 
         // https://maps.googleapis.com/maps/api/place/nearbysearch/output?
         // key=apiKey&location=-100.33,77.44&rankby=distance&type=supermarket
-
-
-
     }
 
     public void onAllItemsClicked(View view) {

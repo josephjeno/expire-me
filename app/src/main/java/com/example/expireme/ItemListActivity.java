@@ -36,6 +36,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Request Code used to start Item Details activity
     static final int SHOW_ITEM = 0;
     static final int ADD_ITEM = 1;
+    boolean refreshRequired = false;
 
     // View that displays list of items
     RecyclerView recyclerView;
@@ -76,7 +77,9 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     @Override
     protected void onResume() {
         super.onResume();
-        myAdapter.refreshItems();
+        if (refreshRequired)
+            myAdapter.refreshItems();
+        refreshRequired = false;
     }
 
     @Override
@@ -107,7 +110,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Navigates to Add Item screen when Add Item button is pressed
     public void onAddItemClicked(View view) {
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ADD_ITEM);
     }
 
     // Sets title of List Activity to filtered item name and enables back button
@@ -122,6 +125,14 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
             actionBar.setTitle("Expired Items");
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
+        if (resultCode == RESULT_OK && (
+                requestCode == SHOW_ITEM || requestCode == ADD_ITEM)) {
+            Log.d("onActivityResult", "myAdapter.refreshItems");
+            refreshRequired = true;
+        }
+    }
 
     //TODO: WHAT IS THIS?
     public boolean onCreateOptionsMenu(Menu menu) {

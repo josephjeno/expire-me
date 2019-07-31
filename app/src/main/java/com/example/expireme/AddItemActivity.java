@@ -70,19 +70,19 @@ public class AddItemActivity extends AppCompatActivity {
         //backButton = findViewById(R.id.add_item_button_back);
         checkButton = findViewById(R.id.add_item_check_button);
 
-        itemExpirationTextView.setOnClickListener(new View.OnClickListener() {
+        itemExpirationTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
-                datePicker(itemExpirationTextView);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                    datePicker(itemExpirationTextView);
             }
         });
 
-        itemAddedDateTextView.setOnClickListener(new View.OnClickListener() {
+        itemAddedDateTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
-                datePicker(itemAddedDateTextView);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                    datePicker(itemAddedDateTextView);
             }
         });
 

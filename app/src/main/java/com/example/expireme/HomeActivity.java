@@ -18,13 +18,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
@@ -53,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
     private FusedLocationProviderClient  fusedLocationClient;
     String apiKey = ""; // TODO: will be committed to release version only
     static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
-    static final int EXPIREME_PERMISSIONS_REQUEST_WIFI = 1;
     TextView locationTextView;
     TextView allItemsNumberTextView;
     TextView expiringSoonItemsNumberTextView;
@@ -115,30 +111,30 @@ public class HomeActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // most common reason for location to be null is on emulators, location was never used before
-                            Log.d("getLastLocation", "success");
-                            if (location != null) {
-                                DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-                                double longitude = location.getLongitude();
-                                double latitude = location.getLatitude();
-                                Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
-                                locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
-                            } else
-                                Log.d("getLastLocation", "location is null");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // most common reason for location to be null is on emulators, location was never used before
+                        Log.d("getLastLocation", "success");
+                        if (location != null) {
+                            DecimalFormat lonlatFormat = new DecimalFormat("####.####");
+                            double longitude = location.getLongitude();
+                            double latitude = location.getLatitude();
+                            Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
+                            locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
+                            initPlaces();
+                        } else
+                            Log.d("getLastLocation", "location is null");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.e("getLastLocation", "failed");
                 }
             });
         } catch (SecurityException e) {
-            // this is just that the getLastLocation() won't complain
+            // this is just so getLastLocation() won't complain
         }
-        initPlaces();
     }
 
     private void initLocation() {
@@ -173,10 +169,7 @@ public class HomeActivity extends AppCompatActivity {
     @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
     private void handlePlaces() {
         Log.e("initPlaces", "start");
-
-        // Initialize Places.
         if (!Places.isInitialized()) {
-            Log.e("initPlaces", "isInitialized needed");
             if (apiKey.equals("")) {
                 Toast.makeText(this, "API Key not defined, unable to show nearby places",
                         Toast.LENGTH_LONG).show();
@@ -185,7 +178,6 @@ public class HomeActivity extends AppCompatActivity {
             Places.initialize(getApplicationContext(), apiKey);
         } else
             Log.e("initPlaces", "isInitialized needed not needed");
-        // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
 
         // https://maps.googleapis.com/maps/api/place/nearbysearch/output?
@@ -193,18 +185,11 @@ public class HomeActivity extends AppCompatActivity {
 
         List<Place.Field> listFields = Arrays.asList(
                 Place.Field.ADDRESS,
-                Place.Field.PRICE_LEVEL,
-                Place.Field.RATING,
                 Place.Field.TYPES,
-                Place.Field.USER_RATINGS_TOTAL,
-                Place.Field.VIEWPORT,
-                Place.Field.ID,
-                Place.Field.NAME,
-                Place.Field.PHOTO_METADATAS,
-                Place.Field.PLUS_CODE);
+                Place.Field.NAME
+        );
 
         FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
-//    FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(getPlaceFields());
         Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
 
         currentPlaceTask.addOnSuccessListener((response) -> {
@@ -218,7 +203,11 @@ public class HomeActivity extends AppCompatActivity {
                     Place.Type type = listIt.next();
                     Log.e("placeLikelihood", "type=" + type.toString());
                     if (type.toString().equals("BUS_STATION") || type.toString().equals("SUPERMARKET") ) {
-                        locationTextView.setText(placeLikelihood.getPlace().getName());
+                        String msg = placeLikelihood.getPlace().getName() +
+                                " is nearby, at " +
+                                placeLikelihood.getPlace().getAddress() +
+                                ". Would you like to renew your expired items?";
+                        locationTextView.setText(msg);
                         found = true;
                         break;
                     }
@@ -227,54 +216,11 @@ public class HomeActivity extends AppCompatActivity {
                     break;
             }
         } );
-
         currentPlaceTask.addOnFailureListener( (exception) -> {
             Log.e("addOnSuccessListener", "failure");
             exception.printStackTrace();
         });
-
-        currentPlaceTask.addOnCompleteListener(task -> Log.e("findCurrentPlace", "exception"));
-
-        /*
-        FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
-        try {
-            Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
-            currentPlaceTask.addOnSuccessListener(new OnSuccessListener<FindCurrentPlaceResponse>() {
-                @Override
-                public void onSuccess(FindCurrentPlaceResponse findCurrentPlaceResponse) {
-                    Log.e("findCurrentPlace", "success");
-                    locationTextView.setText(stringify(findCurrentPlaceResponse));
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("findCurrentPlace", "failure");
-
-                }
-            });
-        } catch (SecurityException e) {
-            Log.e("findCurrentPlace", "exception");
-        }
-        */
-    }
-
-
-    private String stringify(FindCurrentPlaceResponse response) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(response.getPlaceLikelihoods().size()).append(" Current Place Results:");
-
-
-        for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-            builder
-                    .append("Likelihood: ")
-                    .append(placeLikelihood.getLikelihood())
-                    .append("Place: ")
-                    .append(placeLikelihood.getPlace().getName())
-                    .append(placeLikelihood.getPlace().getAddress());
-        }
-
-        return builder.toString();
+        //currentPlaceTask.addOnCompleteListener(task -> Log.e("findCurrentPlace", "addOnCompleteListener"));
     }
 
     // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")

@@ -1,6 +1,7 @@
 package com.example.expireme;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -24,9 +26,19 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_WIFI_STATE;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -35,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     private JSONObject jsonObject;
     String apiKey = ""; // TODO: will be committed to release version only
     static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    static final int EXPIREME_PERMISSIONS_REQUEST_WIFI = 1;
     TextView locationTextView;
 
     {
@@ -81,12 +94,21 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        locationTextView = findViewById(R.id.locationTextView);
 
         initLocation();
     }
 
+    private void askUserForWifiPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_WIFI_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_WIFI_STATE},
+                    EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION);
+        }
+    }
+
     private void askUserForPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION);
@@ -131,10 +153,10 @@ public class HomeActivity extends AppCompatActivity {
         } catch (SecurityException e) {
             // this is just that the getLastLocation() won't complain
         }
+        initPlaces();
     }
 
     private void initLocation() {
-        locationTextView = findViewById(R.id.locationTextView);
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION )
                 == PackageManager.PERMISSION_GRANTED ) {
             Log.e("getLastLocation", "GOT permissions");
@@ -146,14 +168,128 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initPlaces() {
-        // Initialize Places.
-        //Places.initialize(getApplicationContext(), apiKey);
+        askUserForWifiPermission();
+        askUserForPermission();
 
+        if ( ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("checkSelfPermission", "no wifi permissions");
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("checkSelfPermission", "no location permissions");
+            return;
+        } else {
+            Log.e("checkSelfPermission", "got permissions");
+            handlePlaces();
+        }
+    }
+
+
+    @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
+    private void handlePlaces() {
+        Log.e("initPlaces", "start");
+
+        // Initialize Places.
+        if (!Places.isInitialized()) {
+            Log.e("initPlaces", "isInitialized needed");
+            if (apiKey.equals("")) {
+                Toast.makeText(this, "API Key not defined, unable to show nearby places",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            Places.initialize(getApplicationContext(), apiKey);
+        } else
+            Log.e("initPlaces", "isInitialized needed not needed");
         // Create a new Places client instance.
-        //PlacesClient placesClient = Places.createClient(this);
+        PlacesClient placesClient = Places.createClient(this);
 
         // https://maps.googleapis.com/maps/api/place/nearbysearch/output?
         // key=apiKey&location=-100.33,77.44&rankby=distance&type=supermarket
+
+        List<Place.Field> listFields = Arrays.asList(
+                Place.Field.ADDRESS,
+                Place.Field.PRICE_LEVEL,
+                Place.Field.RATING,
+                Place.Field.TYPES,
+                Place.Field.USER_RATINGS_TOTAL,
+                Place.Field.VIEWPORT,
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.PHOTO_METADATAS,
+                Place.Field.PLUS_CODE);
+
+        FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
+//    FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(getPlaceFields());
+        Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
+
+        currentPlaceTask.addOnSuccessListener((response) -> {
+            Log.e("addOnSuccessListener", "success");
+            boolean found = false;
+            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                Log.e("placeLikelihood" , "name=" + placeLikelihood.getPlace().getName());
+                Log.e("placeLikelihood" , "types size=" + placeLikelihood.getPlace().getTypes().size());
+                ListIterator<Place.Type> listIt = placeLikelihood.getPlace().getTypes().listIterator();
+                while (listIt.hasNext()) {
+                    Place.Type type = listIt.next();
+                    Log.e("placeLikelihood", "type=" + type.toString());
+                    if (type.toString().equals("BUS_STATION") || type.toString().equals("SUPERMARKET") ) {
+                        locationTextView.setText(placeLikelihood.getPlace().getName());
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
+        } );
+
+        currentPlaceTask.addOnFailureListener( (exception) -> {
+            Log.e("addOnSuccessListener", "failure");
+            exception.printStackTrace();
+        });
+
+        currentPlaceTask.addOnCompleteListener(task -> Log.e("findCurrentPlace", "exception"));
+
+        /*
+        FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
+        try {
+            Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
+            currentPlaceTask.addOnSuccessListener(new OnSuccessListener<FindCurrentPlaceResponse>() {
+                @Override
+                public void onSuccess(FindCurrentPlaceResponse findCurrentPlaceResponse) {
+                    Log.e("findCurrentPlace", "success");
+                    locationTextView.setText(stringify(findCurrentPlaceResponse));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("findCurrentPlace", "failure");
+
+                }
+            });
+        } catch (SecurityException e) {
+            Log.e("findCurrentPlace", "exception");
+        }
+        */
+    }
+
+
+    private String stringify(FindCurrentPlaceResponse response) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(response.getPlaceLikelihoods().size()).append(" Current Place Results:");
+
+
+        for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+            builder
+                    .append("Likelihood: ")
+                    .append(placeLikelihood.getLikelihood())
+                    .append("Place: ")
+                    .append(placeLikelihood.getPlace().getName())
+                    .append(placeLikelihood.getPlace().getAddress());
+        }
+
+        return builder.toString();
     }
 
     public void onAllItemsClicked(View view) {

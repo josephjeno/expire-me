@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import utils.DatabaseHelper;
@@ -123,21 +124,21 @@ public class ItemDetailsActivity extends AppCompatActivity {
         itemExpirationTextView.setText(foodItem.getExpiryDate());
 
         if (foodItem.getNote().length() == 0) {
-            itemNotesTitleTextView.setTextSize(0);
-            itemNotesTextView.setTextSize(0);
+            itemNotesTitleTextView.setVisibility(View.GONE);
+            itemNotesTextView.setVisibility(View.GONE);
         } else {
             itemNotesTextView.setText(foodItem.getNote());
-            itemNotesTitleTextView.setTextSize(25);
-            itemNotesTextView.setTextSize(30);
+            itemNotesTitleTextView.setVisibility(View.VISIBLE);
+            itemNotesTextView.setVisibility(View.VISIBLE);
         }
 
         if (foodItem.getDateAdded().length() == 0) {
-            itemAddedDateTitleTextView.setTextSize(0);
-            itemAddedDateTextView.setTextSize(0);
+            itemAddedDateTitleTextView.setVisibility(View.GONE);
+            itemAddedDateTextView.setVisibility(View.GONE);
         } else {
             itemAddedDateTextView.setText(foodItem.getDateAdded());
-            itemAddedDateTitleTextView.setTextSize(25);
-            itemAddedDateTextView.setTextSize(30);
+            itemAddedDateTitleTextView.setVisibility(View.VISIBLE);
+            itemAddedDateTextView.setVisibility(View.VISIBLE);
         }
     }
 

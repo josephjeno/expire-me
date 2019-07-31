@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,74 +10,165 @@
     android:orientation="vertical"
     tools:context=".HomeActivity">
 
-    <TextView
-        android:id="@+id/viewAllItemsButton"
-        android:layout_width="370dp"
-        android:layout_height="110dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:background="@drawable/all_items_icon"
-        android:onClick="onAllItemsClicked"
-        />
-
-    <TextView
-        android:id="@+id/viewSoonToExpireItemsButton"
-        android:layout_width="370dp"
-        android:layout_height="110dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:background="@drawable/soon_to_expire_icon"
-        android:onClick="onSoonToExpireClicked"
-        />
-
-    <TextView
-        android:id="@+id/viewExpiredItemsButton"
-        android:layout_width="370dp"
-        android:layout_height="110dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:background="@drawable/expired_icon"
-        android:onClick="onExpiredItemsClicked"
-        />
+    <Button
+        android:id="@+id/addItemButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_add"
+        android:gravity="right"
+        android:onClick="onAddItemClicked"
+        android:padding="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="396dp"
+        android:layout_height="100dp"
+        android:background="#F8FFFFFF"
+        android:onClick="onAllItemsClicked"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="123dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/all_items_icon" />
+
+        <TextView
+            android:id="@+id/viewAllItemsButton"
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="#00FFFFFF"
+            android:padding="20dp"
+            android:text="@string/all_items"
+            android:textColor="#8BC34A"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_all_item_count"
+            android:layout_width="93dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="#4CAF50"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="396dp"
+        android:layout_height="100dp"
+        android:background="#EEFFFFFF"
+        android:onClick="onSoonToExpireClicked"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="163dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/soon_to_expire_icon" />
+
+        <TextView
+            android:id="@+id/viewSoonToExpireItemsButton"
+            android:layout_width="197dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="top"
+            android:padding="20dp"
+            android:text="@string/soon_to_expire"
+            android:textColor="#FF9800"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_ste_count"
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#FF5722"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="396dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="253dp"
+        android:background="#FDFFFFFF"
+        android:onClick="onExpiredItemsClicked"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/expired_item_icon" />
+
+        <TextView
+            android:id="@+id/viewExpiredItemsButton"
+            android:layout_width="195dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="top"
+            android:padding="20dp"
+            android:text="@string/expired_items"
+            android:textColor="#F44336"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_expired_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#E91E63"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="298dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
         <TextView
             android:id="@+id/locationTextView"
             android:layout_width="294dp"
             android:layout_height="70dp"
             android:layout_gravity="left"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="20sp"
-            android:text="Location Info will be here"
             android:background="#FFFFFF"
-            />
-
-
-        <Button
-            android:id="@+id/addItemButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:onClick="onAddItemClicked"
-            android:padding="15dp"
-            android:background="@drawable/button_add"
-            android:layout_gravity="right"
-            />
-
-
+            android:text="Location Info will be here"
+            android:textSize="20sp" />
     </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

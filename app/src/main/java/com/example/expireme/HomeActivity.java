@@ -33,70 +33,55 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
+
+import utils.DatabaseHelper;
+import utils.FoodItem;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 
 
 public class HomeActivity extends AppCompatActivity {
-
+    private DatabaseHelper dbHelper;
+    ArrayList<FoodItem> foodItems = new ArrayList<>();
     private FusedLocationProviderClient  fusedLocationClient;
-    private JSONObject jsonObject;
     String apiKey = ""; // TODO: will be committed to release version only
     static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     static final int EXPIREME_PERMISSIONS_REQUEST_WIFI = 1;
     TextView locationTextView;
-
-    {
-        try {
-            jsonObject = new JSONObject("{\n" +
-                        "   \"html_attributions\" : [],\n" +
-                        "   \"next_page_token\" : \"CvQB7AAAAPzh-eaLooQJ1gxg88_EmHbqLfFt45aahApotdjuy70UqAyx07tuoRCpVM2gbDfpf8YfIbkZ96bzIo8T-6x3a-K8GXlgEX9_gULyzmfsGAhiK7yvc9N_P7nGqyS3pOSCxPAHYLZ7Id5zabLwXOllviOPItH5788c1A-7K-a8IfLp9aGn94ikX-ei40wKlIEGr8SWfle5Unmk0L_qIZOD8Xn_yNa3a4JFPby2affcEi0Kg1eEkEkkngSL-T8wXkjLS82gl_1FlmfMSvRvok5GJ90gmy72yhB5j88wyZLlrZvnVqwuXD0bmEMD_9eEwLm4pBIQA1GcTSIXRswedriQX3gTPBoUEE-rgsd8cPKvpg9ugEKrIy-o31Q\",\n" +
-                        "   \"results\" : [\n" +
-                        "      {\n" +
-                        "         \"geometry\" : {\n" +
-                        "            \"location\" : {\n" +
-                        "               \"lat\" : 40.7477385,\n" +
-                        "               \"lng\" : -73.98689379999999\n" +
-                        "            },\n" +
-                        "            \"viewport\" : {\n" +
-                        "               \"northeast\" : {\n" +
-                        "                  \"lat\" : 40.749029,\n" +
-                        "                  \"lng\" : -73.98506640000001\n" +
-                        "               },\n" +
-                        "               \"southwest\" : {\n" +
-                        "                  \"lat\" : 40.7465661,\n" +
-                        "                  \"lng\" : -73.9883493\n" +
-                        "               }\n" +
-                        "            }\n" +
-                        "         },\n" +
-                        "         \"icon\" : \"http://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png\",\n" +
-                        "         \"id\" : \"e175a5f113997bf0b6515718a67ce6cabc821bf4\",\n" +
-                        "         \"name\" : \"Korea Town\",\n" +
-                        "         \"place_id\" : \"ChIJ_f1FDqlZwokRqCItRNuQIKs\",\n" +
-                        "         \"reference\" : \"CpQBiAAAAKjvKpniYmo7fcXUlXZi0rwKJIObZ2YdZfHW1oN2hYqWZBlJcfbbmbCe9s68497cdtEoOQalVthvJAS7A92EI1o4qXuxhonTaA7UOjcRS30xm4VNmvFFSDMjVx5B1nxWr0dx8mSsRY3ygbWw1d1-Tgxr_sO_LE8bsoRzezYlGM25BRq-6QCrzrzsWqu07-UIqhIQjFSlTMx4T9RqZAX1GCkevxoU4be-kyQ5hudhV8fnI2GpPWq-MFA\",\n" +
-                        "         \"scope\" : \"GOOGLE\",\n" +
-                        "         \"types\" : [ \"neighborhood\", \"political\" ],\n" +
-                        "         \"vicinity\" : \"Manhattan\"\n" +
-                        "      },\n" +
-                        "     ],\n" +
-                        "  status: \"OK\"\n" +
-                        "}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+    TextView allItemsNumberTextView;
+    TextView expiringSoonItemsNumberTextView;
+    TextView expiredItemsNumberTextView;
+    static final int ADD_ITEM = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        dbHelper = new DatabaseHelper(this);
         locationTextView = findViewById(R.id.locationTextView);
+        allItemsNumberTextView = findViewById(R.id.text_all_item_count);
+        expiringSoonItemsNumberTextView = findViewById(R.id.text_ste_count);
+        expiredItemsNumberTextView = findViewById(R.id.text_expired_count);
 
+        populateListsCount();
         initLocation();
+    }
+
+    private void populateListsCount() {
+        foodItems = dbHelper.getAllItems();
+        int allSize = getFilteredItems("ALL").size();
+        int soonSize = getFilteredItems("SOON").size();
+        int expiredSize = getFilteredItems("EXPIRED").size();
+        allItemsNumberTextView.setText(String.valueOf(allSize ));
+        expiringSoonItemsNumberTextView.setText(String.valueOf(soonSize));
+        expiredItemsNumberTextView.setText(String.valueOf(expiredSize));
     }
 
     private void askUserForWifiPermission() {
@@ -292,6 +277,28 @@ public class HomeActivity extends AppCompatActivity {
         return builder.toString();
     }
 
+    // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")
+    public ArrayList<FoodItem> getFilteredItems(String listType) {
+        ArrayList<FoodItem> items = new ArrayList<>();
+        if (listType != null && !listType.equals("ALL")) {
+            Date currentDate = new Date();
+            ListIterator<FoodItem> listIterator = foodItems.listIterator();
+            for (FoodItem item: foodItems) {
+                long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
+                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (listType.equals("EXPIRED")) {
+                    if (diffInDays < 0)
+                        items.add(item);
+                } else if (listType.equals("SOON")) {
+                    if (diffInDays <= 3 && diffInDays >= 0)
+                        items.add(item);
+                }
+            }
+        } else
+            items = foodItems;
+        return items;
+    }
+
     public void onAllItemsClicked(View view) {
         Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
         intent.putExtra("ListType", "ALL");
@@ -312,7 +319,16 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onAddItemClicked(View view) {
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ADD_ITEM);
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
+        if (resultCode == RESULT_OK && requestCode == ADD_ITEM) {
+            Log.d("MainActivity", "onActivityResult.refreshItems");
+            populateListsCount();
+        }
+    }
+
 }
 

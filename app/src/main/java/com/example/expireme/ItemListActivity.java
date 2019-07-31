@@ -74,7 +74,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     @Override
     protected void onResume() {
         super.onResume();
-        //myAdapter.refreshItems();
+        myAdapter.refreshItems();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Navigates to Add Item screen when Add Item button is pressed
     public void onAddItemClicked(View view) {
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
-        startActivityForResult(intent, ADD_ITEM);
+        startActivity(intent);
     }
 
     // Sets title of List Activity to filtered item name and enables back button
@@ -124,16 +124,6 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     //TODO: WHAT IS THIS?
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
-    }
-
-    //TODO: WHAT IS THIS?
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
-        if (resultCode == RESULT_OK && (
-                requestCode == SHOW_ITEM || resultCode == ADD_ITEM)) {
-            Log.d("onActivityResult", "myAdapter.refreshItems");
-            myAdapter.refreshItems();
-        }
     }
 
 }

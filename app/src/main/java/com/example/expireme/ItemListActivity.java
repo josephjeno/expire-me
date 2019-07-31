@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -61,7 +63,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         // Configures RecyclerView
         recyclerView = findViewById(R.id.myRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myAdapter = new CustomItemAdapter(this, listType);
+        myAdapter = new CustomItemAdapter(this, listType, recyclerView);
         myAdapter.setClickListener(this);
         recyclerView.setAdapter(myAdapter);
 

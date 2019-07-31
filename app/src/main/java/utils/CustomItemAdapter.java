@@ -2,14 +2,17 @@ package utils;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -28,11 +31,17 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // Filter for item list ("ALL", "SOON", "EXPIRED")
     private String listType;
 
+    // Used for undo button
+    private RecyclerView recyclerView;
+    private FoodItem recentlyDeleted;
+    private int recentlyDeletedPosition;
+
     private ItemClickListener myClickListener;
 
-    public CustomItemAdapter(Context context, String listType) {
+    public CustomItemAdapter(Context context, String listType, RecyclerView recyclerView) {
         this.context = context;
         this.listType = listType;
+        this.recyclerView = recyclerView;
 
         dbHelper = new DatabaseHelper(context);
         this.items = dbHelper.getFilteredItems(listType);
@@ -60,9 +69,28 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // Deletes item from DB and list and refreshes view
     public void deleteItem(int position) {
-        dbHelper.deleteItem(items.get(position).getId());
+        recentlyDeleted = items.get(position);
+        recentlyDeletedPosition = position;
         items.remove(position);
-        this.notifyDataSetChanged();
+        notifyItemRemoved(position);
+        displayUndoSnackbar();
+    }
+
+    private void displayUndoSnackbar() {
+        Snackbar snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
+        snackbar.setAction("UNDO", v -> Log.d("SNACKBAR_UNDO", "Reinserting item " + recentlyDeleted.getName()));
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                if (event == DISMISS_EVENT_ACTION) {
+                    items.add(recentlyDeletedPosition, recentlyDeleted);
+                    notifyItemInserted(recentlyDeletedPosition);
+                } else {
+                    dbHelper.deleteItem(recentlyDeleted.getId());
+                }
+            }
+        });
+        snackbar.show();
     }
 
     // RECYCLERVIEW ADAPTER OVERRIDE METHODS

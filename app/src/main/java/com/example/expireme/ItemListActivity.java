@@ -34,6 +34,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Request Code used to start Item Details activity
     static final int SHOW_ITEM = 0;
     static final int ADD_ITEM = 1;
+    boolean requireRefresh = false;
 
     // View that displays list of items
     RecyclerView recyclerView;
@@ -74,7 +75,9 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     @Override
     protected void onResume() {
         super.onResume();
-        //myAdapter.refreshItems();
+        if (requireRefresh)
+            myAdapter.refreshItems();
+        requireRefresh = false;
     }
 
     @Override
@@ -132,7 +135,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         if (resultCode == RESULT_OK && (
                 requestCode == SHOW_ITEM || resultCode == ADD_ITEM)) {
             Log.d("onActivityResult", "myAdapter.refreshItems");
-            myAdapter.refreshItems();
+            requireRefresh = true;
         }
     }
 

@@ -55,6 +55,12 @@ public class HomeActivity extends AppCompatActivity {
     TextView expiringSoonItemsNumberTextView;
     TextView expiredItemsNumberTextView;
     static final int ADD_ITEM = 1;
+    int allSize;
+    int soonSize;
+    int expiredSize;
+    boolean placesAquired = false;
+    String foundPlaceName;
+    String foundPlaceAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +78,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private void populateListsCount() {
         foodItems = dbHelper.getAllItems();
-        int allSize = getFilteredItems("ALL").size();
-        int soonSize = getFilteredItems("SOON").size();
-        int expiredSize = getFilteredItems("EXPIRED").size();
+        allSize = getFilteredItems("ALL").size();
+        soonSize = getFilteredItems("SOON").size();
+        expiredSize = getFilteredItems("EXPIRED").size();
         allItemsNumberTextView.setText(String.valueOf(allSize ));
         expiringSoonItemsNumberTextView.setText(String.valueOf(soonSize));
         expiredItemsNumberTextView.setText(String.valueOf(expiredSize));
+        initPlaces();
     }
 
     private void askUserForWifiPermission() {
@@ -165,19 +172,45 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private void setLocationMessage(String name, String address, String state) {
+        String msg = name +
+                " is nearby, at " +
+                address +
+                ". Would you like to renew your " +
+                state +
+                " items?";
+        locationTextView.setVisibility(View.VISIBLE);
+        locationTextView.setText(msg);
+    }
 
     @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
     private void handlePlaces() {
-        Log.e("initPlaces", "start");
+        Log.e("handlePlaces", "start");
+        String expiringState;
+        if (expiredSize > 0 )
+            expiringState = "expired";
+        else if (soonSize > 0)
+            expiringState = "expiring";
+        else {
+            locationTextView.setVisibility(View.GONE);
+            return;
+        }
+        // this is for mock testing
+        if (apiKey.equals("")) {
+            Toast.makeText(this, "API Key not defined, unable to show nearby places",
+                    Toast.LENGTH_LONG).show();
+            setLocationMessage("Wollaston's Market", "369 Huntington Ave, Boston, MA 02115", expiringState);
+            return;
+        }
+        if (placesAquired) {// only get places once!
+            setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
+            return;
+        }
         if (!Places.isInitialized()) {
-            if (apiKey.equals("")) {
-                Toast.makeText(this, "API Key not defined, unable to show nearby places",
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
+
             Places.initialize(getApplicationContext(), apiKey);
         } else
-            Log.e("initPlaces", "isInitialized needed not needed");
+            Log.e("initPlaces", "isInitialized, init not needed");
         PlacesClient placesClient = Places.createClient(this);
 
         // https://maps.googleapis.com/maps/api/place/nearbysearch/output?
@@ -191,7 +224,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
         Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
-
+        placesAquired = true;
         currentPlaceTask.addOnSuccessListener((response) -> {
             Log.e("addOnSuccessListener", "success");
             boolean found = false;
@@ -203,11 +236,9 @@ public class HomeActivity extends AppCompatActivity {
                     Place.Type type = listIt.next();
                     Log.e("placeLikelihood", "type=" + type.toString());
                     if (type.toString().equals("BUS_STATION") || type.toString().equals("SUPERMARKET") ) {
-                        String msg = placeLikelihood.getPlace().getName() +
-                                " is nearby, at " +
-                                placeLikelihood.getPlace().getAddress() +
-                                ". Would you like to renew your expired items?";
-                        locationTextView.setText(msg);
+                        foundPlaceName = placeLikelihood.getPlace().getName();
+                        foundPlaceAddress = placeLikelihood.getPlace().getAddress();
+                        setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
                         found = true;
                         break;
                     }

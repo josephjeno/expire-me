@@ -76,6 +76,13 @@ public class HomeActivity extends AppCompatActivity {
         initLocation();
     }
 
+    // Updates list of items after returning to ListActivity
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateListsCount();
+    }
+
     private void populateListsCount() {
         foodItems = dbHelper.getAllItems();
         allSize = getFilteredItems("ALL").size();
@@ -197,8 +204,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         // this is for mock testing
         if (apiKey.equals("")) {
-            Toast.makeText(this, "API Key not defined, unable to show nearby places",
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "API Key not defined, unable to show nearby places", Toast.LENGTH_LONG).show();
             setLocationMessage("Wollaston's Market", "369 Huntington Ave, Boston, MA 02115", expiringState);
             return;
         }
@@ -303,7 +309,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
         if (resultCode == RESULT_OK && requestCode == ADD_ITEM) {
             Log.d("MainActivity", "onActivityResult.refreshItems");
-            populateListsCount();
+            //populateListsCount();
         }
     }
 

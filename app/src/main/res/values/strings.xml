@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExpireMe</string>
+    <string name="app_name">ExpireMe!</string>
     <string name="add_item_title_name">New Item</string>
     <string name="all_items">All Items</string>
     <string name="expired_items">Expired Items</string>

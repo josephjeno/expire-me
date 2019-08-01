@@ -4,10 +4,13 @@ package com.example.expireme;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 
 import android.content.Intent;
@@ -50,6 +53,9 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Filter for item list ("ALL", "SOON", "EXPIRED")
     String listType;
 
+    // View used for searching
+    private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +83,42 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     @Override
     protected void onResume() {
         super.onResume();
+
         if (refreshRequired)
             myAdapter.refreshItems();
         refreshRequired = false;
     }
 
+    // Used to display custom Action Bar (with buttons)
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.item_list_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                myAdapter.getFilter().filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                myAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    // Used to handle custom Action Bar button clicks
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -89,8 +126,20 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
                 setResult(RESULT_OK, null);
                 finish();
                 return true;
+            case R.id.action_search:
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // close search view on back button pressed
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
+        super.onBackPressed();
     }
 
     // Navigates to Item Details screen when item is selected from the list
@@ -132,11 +181,6 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
             Log.d("onActivityResult", "myAdapter.refreshItems");
             refreshRequired = true;
         }
-    }
-
-    //TODO: WHAT IS THIS?
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
     }
 
 }

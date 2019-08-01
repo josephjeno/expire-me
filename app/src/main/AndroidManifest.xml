@@ -10,7 +10,14 @@
         android:theme="@style/AppTheme">
         <activity android:name=".AddItemActivity"></activity>
         <activity android:name=".ItemDetailsActivity" />
-        <activity android:name=".ItemListActivity" />
+        <activity android:name=".ItemListActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

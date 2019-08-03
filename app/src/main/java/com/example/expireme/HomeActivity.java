@@ -181,11 +181,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setLocationMessage(String name, String address, String state) {
         String msg = name +
-                " is nearby, at " +
-                address +
-                ". Would you like to renew your " +
-                state +
-                " items?";
+                " is 5 miles away, would you like directions?"; //TODO get actual mileage delta
         locationTextView.setVisibility(View.VISIBLE);
         locationTextView.setText(msg);
     }

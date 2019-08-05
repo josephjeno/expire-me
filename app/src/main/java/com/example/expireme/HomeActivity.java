@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -61,6 +62,10 @@ public class HomeActivity extends AppCompatActivity {
     boolean placesAquired = false;
     String foundPlaceName;
     String foundPlaceAddress;
+    double longitude;
+    double nearby_lon = 181;
+    double latitude;
+    double nearby_lat = 181;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,19 @@ public class HomeActivity extends AppCompatActivity {
 
         populateListsCount();
         initLocation();
+
+        locationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Location clicked", Toast.LENGTH_LONG).show();
+                Uri gmmIntentUri = Uri.parse(makeLonLatString());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+            }
+        });
     }
 
     // Updates list of items after returning to ListActivity
@@ -92,6 +110,22 @@ public class HomeActivity extends AppCompatActivity {
         expiringSoonItemsNumberTextView.setText(String.valueOf(soonSize));
         expiredItemsNumberTextView.setText(String.valueOf(expiredSize));
         initPlaces();
+    }
+
+    private String makeLonLatString() {
+        // "geo:37.7749,-122.4194"
+        double lat;
+        double lon;
+        if (nearby_lon == 181) {
+            lat = latitude;
+            lon = longitude;
+        } else {
+            lat = nearby_lat;
+            lon = nearby_lon;
+        }
+        DecimalFormat lonlatFormat = new DecimalFormat("####.####");
+        String output = "geo:" + lonlatFormat.format(lat) + "," + lonlatFormat.format(lon);
+        return output;
     }
 
     private void askUserForWifiPermission() {
@@ -132,8 +166,8 @@ public class HomeActivity extends AppCompatActivity {
                         Log.d("getLastLocation", "success");
                         if (location != null) {
                             DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-                            double longitude = location.getLongitude();
-                            double latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            latitude = location.getLatitude();
                             Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
                             locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
                             initPlaces();
@@ -180,8 +214,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setLocationMessage(String name, String address, String state) {
+        DecimalFormat distanceFormat = new DecimalFormat("##.#");
+
         String msg = name +
-                " is 5 miles away, would you like directions?"; //TODO get actual mileage delta
+                " is " +
+                distanceFormat.format(distance(latitude, longitude, nearby_lat, nearby_lon)) +
+                " miles away, would you see it on the map?";
+        //Log.e("setLocationMessage", latitude + " " + longitude + " " + nearby_lat + " " + nearby_lon);
         locationTextView.setVisibility(View.VISIBLE);
         locationTextView.setText(msg);
     }
@@ -221,7 +260,8 @@ public class HomeActivity extends AppCompatActivity {
         List<Place.Field> listFields = Arrays.asList(
                 Place.Field.ADDRESS,
                 Place.Field.TYPES,
-                Place.Field.NAME
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
         );
 
         FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
@@ -237,11 +277,15 @@ public class HomeActivity extends AppCompatActivity {
                 while (listIt.hasNext()) {
                     Place.Type type = listIt.next();
                     Log.e("placeLikelihood", "type=" + type.toString());
-                    if (type.toString().equals("BUS_STATION") || type.toString().equals("SUPERMARKET") ) {
+                    if (type.toString().equals("TRANSIT_STATION") || type.toString().equals("SUPERMARKET") ) {
                         foundPlaceName = placeLikelihood.getPlace().getName();
                         foundPlaceAddress = placeLikelihood.getPlace().getAddress();
-                        setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
                         found = true;
+                        nearby_lat = placeLikelihood.getPlace().getLatLng().latitude;
+                        nearby_lon = placeLikelihood.getPlace().getLatLng().longitude;
+                        Log.e("addOnSuccessListener", "lat=" + nearby_lat + " lon=" + nearby_lon);
+                        Log.e("addOnSuccessListener", "distance=" + distance(latitude, longitude, nearby_lat, nearby_lon));
+                        setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
                         break;
                     }
                 }
@@ -254,6 +298,27 @@ public class HomeActivity extends AppCompatActivity {
             exception.printStackTrace();
         });
         //currentPlaceTask.addOnCompleteListener(task -> Log.e("findCurrentPlace", "addOnCompleteListener"));
+    }
+
+    public float distance (double lat_a, double lng_a, double lat_b, double lng_b )
+    {
+        Log.e("distance", lat_a + " " + lng_a + " " + lat_b + " " + lng_b);
+        if (lat_a>180)
+            return new Float(3.7);
+
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b-lat_a);
+        double lngDiff = Math.toRadians(lng_b-lng_a);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        int meterConversion = 1609;
+
+        return new Float(distance).floatValue();
+        //return new Float(distance * meterConversion).floatValue();
     }
 
     // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")

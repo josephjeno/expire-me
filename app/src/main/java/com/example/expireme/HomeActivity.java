@@ -48,7 +48,6 @@ import static android.Manifest.permission.ACCESS_WIFI_STATE;
 public class HomeActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     ArrayList<FoodItem> foodItems = new ArrayList<>();
-    private FusedLocationProviderClient  fusedLocationClient;
     String apiKey = ""; // TODO: will be committed to release version only
     static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     TextView locationTextView;
@@ -92,6 +91,10 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        Intent intent = new Intent(HomeActivity.this, NotificationForegroundService.class);
+        startService(intent);
     }
 
     // Updates list of items after returning to ListActivity
@@ -156,6 +159,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateLocation() {
+        FusedLocationProviderClient  fusedLocationClient;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             fusedLocationClient.getLastLocation()

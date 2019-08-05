@@ -216,7 +216,11 @@ public class HomeActivity extends AppCompatActivity {
     private void setLocationMessage(String name, String address, String state) {
         DecimalFormat distanceFormat = new DecimalFormat("##.#");
 
-        String msg = name +
+        String msg;
+        if (name == null)
+            msg = "Unfortunately, there's no supermarket nearby.";
+        else
+            msg = name +
                 " is " +
                 distanceFormat.format(distance(latitude, longitude, nearby_lat, nearby_lon)) +
                 " miles away, would you see it on the map?";
@@ -277,7 +281,7 @@ public class HomeActivity extends AppCompatActivity {
                 while (listIt.hasNext()) {
                     Place.Type type = listIt.next();
                     Log.e("placeLikelihood", "type=" + type.toString());
-                    if (type.toString().equals("TRANSIT_STATION") || type.toString().equals("SUPERMARKET") ) {
+                    if (type.toString().equals("SUPERMARKET") ) {
                         foundPlaceName = placeLikelihood.getPlace().getName();
                         foundPlaceAddress = placeLikelihood.getPlace().getAddress();
                         found = true;
@@ -289,9 +293,11 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                // TODO: do we want to look for other nearby results? or is one result enough?
                 if (found)
-                    break;
+                    return;
             }
+            setLocationMessage(null, null, expiringState);
         } );
         currentPlaceTask.addOnFailureListener( (exception) -> {
             Log.e("addOnSuccessListener", "failure");

@@ -62,10 +62,10 @@ public class HomeActivity extends AppCompatActivity {
     boolean placesAquired = false;
     String foundPlaceName;
     String foundPlaceAddress;
-    double longitude;
-    double nearby_lon = 181;
     double latitude;
-    double nearby_lat = 181;
+    double nearby_lat = 37;
+    double longitude;
+    double nearby_lon = -122;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,21 +304,12 @@ public class HomeActivity extends AppCompatActivity {
     {
         Log.e("distance", lat_a + " " + lng_a + " " + lat_b + " " + lng_b);
         if (lat_a>180)
-            return new Float(3.7);
+            return new Float(1.2);
 
-        double earthRadius = 3958.75;
-        double latDiff = Math.toRadians(lat_b-lat_a);
-        double lngDiff = Math.toRadians(lng_b-lng_a);
-        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
-                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = earthRadius * c;
-
-        int meterConversion = 1609;
-
-        return new Float(distance).floatValue();
-        //return new Float(distance * meterConversion).floatValue();
+        float[] results = new float[3];
+        Location.distanceBetween(lat_a, lng_a, lat_b, lng_b, results);
+        Log.e("distance", "results[0]="+ results[0] + " results[1]=" + results[1] + " results[2]=" + results[2]);
+        return results[0] / 1609;
     }
 
     // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")

@@ -7,11 +7,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +44,7 @@ import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
 import utils.DatabaseHelper;
+import utils.ExpirationJobService;
 import utils.FoodItem;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -65,6 +71,9 @@ public class HomeActivity extends AppCompatActivity {
     double nearby_lat = 37;
     double longitude;
     double nearby_lon = -122;
+    private ComponentName mServiceComponent;
+    private int mJobId = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +100,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+        mServiceComponent = new ComponentName(this, ExpirationJobService.class);
 
-
-        Intent intent = new Intent(HomeActivity.this, NotificationForegroundService.class);
-        startService(intent);
     }
 
     // Updates list of items after returning to ListActivity
@@ -327,7 +334,6 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<FoodItem> items = new ArrayList<>();
         if (listType != null && !listType.equals("ALL")) {
             Date currentDate = new Date();
-            ListIterator<FoodItem> listIterator = foodItems.listIterator();
             for (FoodItem item: foodItems) {
                 long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
                 long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -373,6 +379,39 @@ public class HomeActivity extends AppCompatActivity {
             Log.d("MainActivity", "onActivityResult.refreshItems");
             //populateListsCount();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("Home:onStop", "onStop");
+        stopService(new Intent(this, ExpirationJobService.class));
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent startServiceIntent = new Intent(this, ExpirationJobService.class);
+        startService(startServiceIntent);
+        scheduleJob();
+    }
+
+    public void scheduleJob() {
+        Log.e("Home:scheduleJob", "scheduleJob started");
+        JobInfo.Builder builder = new JobInfo.Builder(mJobId++, mServiceComponent);
+        PersistableBundle extras = new PersistableBundle();
+
+        builder.setMinimumLatency(60 * 1000);
+        builder.setOverrideDeadline(62 * 1000);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        builder.setRequiresDeviceIdle(false);
+        builder.setRequiresCharging(false);
+        builder.setExtras(extras);
+
+        // Schedule job
+        Log.e("Home:scheduleJob", "Scheduling job");
+        JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        tm.schedule(builder.build());
     }
 
 }

@@ -1,16 +1,28 @@
+/*
+ * Copyright (c) 2019. Anik Bhattacharjee, Joseph Jeno, Amir Shlomo Yaakobovich
+ * All rights reserved.
+ */
+
 package com.example.expireme;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +77,9 @@ public class HomeActivity extends AppCompatActivity {
     double nearby_lat = 37;
     double longitude;
     double nearby_lon = -122;
+    NotificationManager notificationManager;
+    String CHANNEL_ID = "1";
+    int intentId = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -374,6 +389,42 @@ public class HomeActivity extends AppCompatActivity {
             //populateListsCount();
         }
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel2";
+            String description = "tty";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
+    private void startNotificiations() {
+        createNotificationChannel();
+        Intent new_intent = new Intent(this, HomeActivity.class);
+        new_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, intentId, new_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder2 = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notificationimg)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setOngoing(false);
+
+        Notification notificationBar = builder2.build();
+        //notificationBar.flags = /*Notification.FLAG_ONLY_ALERT_ONCE | */ Notification.FLAG_AUTO_CANCEL;
+        Log.e("onStartCommand", "notificationBar.flags=" + notificationBar.flags);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(999, notificationBar);
+
+    }
 }
 

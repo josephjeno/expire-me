@@ -1,9 +1,16 @@
+/*
+ * Copyright (c) 2019. Anik Bhattacharjee, Joseph Jeno, Amir Shlomo Yaakobovich
+ * All rights reserved.
+ */
+
 package com.example.expireme;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -15,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -413,6 +421,5 @@ public class HomeActivity extends AppCompatActivity {
         JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         tm.schedule(builder.build());
     }
-
 }
 

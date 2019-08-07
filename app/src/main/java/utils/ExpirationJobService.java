@@ -4,13 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -25,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ExpirationJobService extends JobService {
-    private static final String TAG = ExpirationJobService.class.getSimpleName();
     String CHANNEL_ID = "1";
     int intentId = 100;
     NotificationManager notificationManager;
@@ -34,10 +30,10 @@ public class ExpirationJobService extends JobService {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "channel2";
+            CharSequence name = "ExpireMe! Channel";
             String description = "tty";
-
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+
             channel.setDescription(description);
             notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
@@ -56,13 +52,11 @@ public class ExpirationJobService extends JobService {
                 .setContentText("Open the app to find where to buy new items!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setOngoing(false);
+                .setAutoCancel(true);
 
         Notification notificationBar = builder.build();
         Log.e("onStartCommand", "notificationBar.flags=" + notificationBar.flags);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, notificationBar);
     }
 
@@ -70,14 +64,13 @@ public class ExpirationJobService extends JobService {
     public void onCreate() {
         super.onCreate();
         dbHelper = new DatabaseHelper(this);
-
-        Log.i(TAG, "Service created");
+        Log.i("ExpirationJobService", "onCreate");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "Service destroyed");
+        Log.i("ExpirationJobService", "onDestroy");
     }
 
     @Override
@@ -87,11 +80,10 @@ public class ExpirationJobService extends JobService {
 
     @Override
     public boolean onStartJob(final JobParameters params) {
-
         Log.e("onStartJob", "postDelayed run");
         List<FoodItem> foodItems = dbHelper.getAllItems();
-
         Date currentDate = new Date();
+
         for (FoodItem item: foodItems) {
             long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
             long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -102,18 +94,14 @@ public class ExpirationJobService extends JobService {
             }
         }
         jobFinished(params, false);
-        Log.i(TAG, "on start job: " + params.getJobId());
-
-        // Return true as there's more work to be done with this job.
+        Log.i("ExpirationJobService", "onStopJob");
         return true;
     }
 
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.i(TAG, "on stop job: " + params.getJobId());
-
-        // Return false to drop the job.
+        Log.i("ExpirationJobService", "onStopJob");
         return false;
     }
 

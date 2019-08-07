@@ -79,8 +79,8 @@ public class HomeActivity extends AppCompatActivity {
     double nearby_lat = 37;
     double longitude;
     double nearby_lon = -122;
-    private ComponentName mServiceComponent;
-    private int mJobId = 0;
+    private ComponentName componentName;
+    private int jobId = 0;
 
 
     @Override
@@ -108,8 +108,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-        mServiceComponent = new ComponentName(this, ExpirationJobService.class);
-
+        componentName = new ComponentName(this, ExpirationJobService.class);
     }
 
     // Updates list of items after returning to ListActivity
@@ -406,11 +405,11 @@ public class HomeActivity extends AppCompatActivity {
 
     public void scheduleJob() {
         Log.e("Home:scheduleJob", "scheduleJob started");
-        JobInfo.Builder builder = new JobInfo.Builder(mJobId++, mServiceComponent);
+        JobInfo.Builder builder = new JobInfo.Builder(jobId++, componentName);
         PersistableBundle extras = new PersistableBundle();
 
         builder.setMinimumLatency(60 * 1000);
-        builder.setOverrideDeadline(62 * 1000);
+        builder.setOverrideDeadline(70 * 1000);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setRequiresDeviceIdle(false);
         builder.setRequiresCharging(false);
@@ -418,8 +417,8 @@ public class HomeActivity extends AppCompatActivity {
 
         // Schedule job
         Log.e("Home:scheduleJob", "Scheduling job");
-        JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        tm.schedule(builder.build());
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
     }
 }
 

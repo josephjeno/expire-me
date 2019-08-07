@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -20,15 +23,22 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import utils.DatabaseHelper;
 import utils.FoodItem;
+import utils.StoredFood;
 
 public class AddItemActivity extends AppCompatActivity {
 
     ImageButton checkButton;
 
-    TextView itemNameTextView;
+    AutoCompleteTextView itemNameTextView;
     TextView itemExpirationTextView;
     TextView itemNotesTextView;
     TextView itemAddedDateTextView;
@@ -51,10 +61,42 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        dbHelper = new DatabaseHelper(this);
+
         itemNameTextView = findViewById(R.id.add_item_name);
+        List<String> names = new ArrayList<>();
+        List<Integer> days = new ArrayList<>();
+        for(StoredFood food: dbHelper.getAllStoredItems()){
+            names.add(food.getName());
+            days.add(food.getDays());
+        }
+        String [] foodNames = new String[names.size()];
+        names.toArray(foodNames);
+        Integer [] foodDays = new Integer[days.size()];
+        days.toArray(foodDays);
+        Log.d("Array:", "onCreate: " + days.toString());
+        ArrayAdapter<String> foodAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, foodNames );
+        itemNameTextView.setAdapter(foodAdapter);
         itemExpirationTextView = findViewById(R.id.editTextExpirationDate);
         itemNotesTextView = findViewById(R.id.add_item_notes);
         itemAddedDateTextView = findViewById(R.id.editTextPurchasedOnDate);
+
+        itemNameTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+                Date date = new Date();
+                String time = sdf.format(date);
+                itemAddedDateTextView.setText(time);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, foodDays[i]);
+                Date expirationDate = calendar.getTime();
+                itemExpirationTextView.setText(sdf.format(expirationDate));
+            }
+        });
 
         dbHelper = new DatabaseHelper(getApplicationContext());
 
@@ -156,6 +198,25 @@ public class AddItemActivity extends AppCompatActivity {
                     itemExpirationDate
             );
             dbHelper.addFoodItem(foodItem);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            try{
+                Date dateAddedDate = sdf.parse(itemAddedDateTextView.getText().toString());
+                Date expirationDateDate = sdf.parse(itemExpirationDate);
+                Calendar added = new GregorianCalendar();
+                Calendar expiration = new GregorianCalendar();
+                added.setTime(dateAddedDate);
+                expiration.setTime(expirationDateDate);
+                Integer days = daysBetween(expiration.getTime(), added.getTime());
+                StoredFood storedFood = new StoredFood(
+                        itemName,
+                        days
+                );
+                dbHelper.addStoredFoodItem(storedFood);
+            }catch (Exception e){
+                Log.d("AddItemAcitivity", "onCheckButtonClicked: " + e.toString());
+            }
+
             finishAddItem();
         }else {
             if(foodItem != null){
@@ -169,6 +230,9 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
+    public Integer daysBetween(Date d1, Date d2){
+        return (int)( (d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
+    }
     //display date picker dialog
     public void datePicker(final TextView date) {
         year=calendar.get(Calendar.YEAR);

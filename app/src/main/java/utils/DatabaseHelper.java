@@ -19,6 +19,8 @@ import utils.FoodItem;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String DATABASE_NAME = "random";
+
     private static class FoodItemEntry implements BaseColumns{
         private static final String TABLE_NAME = "FoodItems";
         private static final String COLUMN_NAME_FOOD_NAME = "name";
@@ -27,8 +29,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         private static final String COLUMN_NAME_NOTE = "note";
     }
 
+    private static class StoredFoodItems implements BaseColumns{
+        private static final String TABLE_NAME = "StoredFoodItems";
+        private static final String COLUMN_NAME_ITEM = "name";
+        private static final String COLUMN_NAME_DAYS = "days";
+    }
+
+
     public DatabaseHelper(Context context) {
-        super(context, FoodItemEntry.TABLE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 1);
     }
 
     @Override
@@ -40,6 +49,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 FoodItemEntry.COLUMN_NAME_EXPIRY_DATE + " TEXT, " +
                 FoodItemEntry.COLUMN_NAME_NOTE + " TEXT)";
         sqLiteDatabase.execSQL(createTable);
+
+        try {
+            String createStoredTable = "CREATE TABLE " + StoredFoodItems.TABLE_NAME + " (" +
+                    StoredFoodItems.COLUMN_NAME_ITEM + " TEXT PRIMARY KEY," +
+                    StoredFoodItems.COLUMN_NAME_DAYS + " INTEGER)";
+            sqLiteDatabase.execSQL(createStoredTable);
+        }catch (Exception e){
+            Log.d("DBEXCEPTION", "onCreate: " + e.toString());
+        }
+
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+        + "(NAME, DAYS) VALUES ('Milk', 14)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Cheese', 3)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Peanut Butter', 90)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Eggs', 14)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Jam', 120)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Bread', 7)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Yogurt', 20)");
+        sqLiteDatabase.execSQL("INSERT INTO " + StoredFoodItems.TABLE_NAME
+                + "(NAME, DAYS) VALUES ('Chicken', 14)");
+
     }
 
     // Don't do anything on upgrade for now. Placeholder for possible
@@ -60,6 +96,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(FoodItemEntry.TABLE_NAME, null, values);
 
         return result != -1;
+    }
+
+    public boolean addStoredFoodItem(StoredFood item){
+        Log.d("DB", "addStoredFoodItem: " + item.getDays().toString());
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(StoredFoodItems.COLUMN_NAME_ITEM, item.getName());
+        values.put(StoredFoodItems.COLUMN_NAME_DAYS, item.getDays());
+
+        long result = db.insert(StoredFoodItems.TABLE_NAME, null, values);
+
+        if (result == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     private FoodItem getFoodItemFromCursor(Cursor cursor) {
@@ -137,6 +190,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return o1.getDateExpiration().compareTo(o2.getDateExpiration());
             }
         });
+        return foodItems;
+    }
+
+    public ArrayList<StoredFood> getAllStoredItems(){
+        Log.d("MyTag", "getAllStoredItems: here");
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] projection = {
+                StoredFoodItems.COLUMN_NAME_ITEM,
+                StoredFoodItems.COLUMN_NAME_DAYS
+        };
+        Cursor cursor = db.query(
+                StoredFoodItems.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        ArrayList<StoredFood> foodItems = new ArrayList<>();
+        while (cursor.moveToNext()){
+            foodItems.add(new StoredFood(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(StoredFoodItems.COLUMN_NAME_ITEM)),
+                    cursor.getInt(
+                            cursor.getColumnIndexOrThrow(StoredFoodItems.COLUMN_NAME_DAYS))
+            ));
+        }
         return foodItems;
     }
 

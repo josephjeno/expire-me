@@ -59,12 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(FoodItemEntry.TABLE_NAME, null, values);
 
-        if (result == -1){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return result != -1;
     }
 
     private FoodItem getFoodItemFromCursor(Cursor cursor) {
@@ -177,12 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String selection = FoodItemEntry._ID + "=?";
         String[] selectionArgs = {itemId.toString()};
         int deletedRows = db.delete(FoodItemEntry.TABLE_NAME, selection, selectionArgs);
-        if(deletedRows == 1){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return deletedRows == 1;
     }
 
     public boolean updateItem(FoodItem item){
@@ -200,11 +190,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         int count = db.update(FoodItemEntry.TABLE_NAME, values, selection, selectionArgs);
 
-        if(count == 1){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return count == 1;
     }
 }

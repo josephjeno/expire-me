@@ -328,7 +328,7 @@ public class HomeActivity extends AppCompatActivity {
     {
         Log.e("distance", lat_a + " " + lng_a + " " + lat_b + " " + lng_b);
         if (lat_a>180)
-            return new Float(1.2);
+            return Float.valueOf(1.2f);
 
         float[] results = new float[3];
         Location.distanceBetween(lat_a, lng_a, lat_b, lng_b, results);

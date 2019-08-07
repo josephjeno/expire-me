@@ -19,7 +19,7 @@
             android:name="utils.ExpirationJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
         <activity android:name=".AddItemActivity" />
         <activity android:name=".ItemDetailsActivity" />
@@ -30,6 +30,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity">

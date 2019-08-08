@@ -87,16 +87,17 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     private void displayUndoSnackbar() {
         Snackbar snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
-        snackbar.setAction("UNDO", v -> Log.d("SNACKBAR_UNDO", "Reinserting item " + recentlyDeleted.getName()));
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemsFiltered.add(recentlyDeletedPosition, recentlyDeleted);
+                notifyItemInserted(recentlyDeletedPosition);
+            }
+        });
         snackbar.addCallback(new Snackbar.Callback() {
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
-                if (event == DISMISS_EVENT_ACTION) {
-                    itemsFiltered.add(recentlyDeletedPosition, recentlyDeleted);
-                    notifyItemInserted(recentlyDeletedPosition);
-                } else {
-                    dbHelper.deleteItem(recentlyDeleted.getId());
-                }
+                dbHelper.deleteItem(recentlyDeleted.getId());
             }
         });
         snackbar.show();

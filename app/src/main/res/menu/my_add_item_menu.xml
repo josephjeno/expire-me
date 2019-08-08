@@ -4,6 +4,6 @@
         android:id="@+id/add_item_check_button"
         android:title=""
         app:showAsAction="always"
-        android:icon="@drawable/checked"
+        android:icon="@drawable/baseline_check_24"
         />
 </menu>

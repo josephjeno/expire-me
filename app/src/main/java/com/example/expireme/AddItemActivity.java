@@ -17,7 +17,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import utils.DatabaseHelper;
 import utils.FoodItem;
@@ -85,6 +87,10 @@ public class AddItemActivity extends AppCompatActivity {
                 datePicker(itemAddedDateTextView);
             }
         });
+
+        // Set purchased date to today by default
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy");
+        itemAddedDateTextView.setText(dateFormat.format(new Date()));
 
         calendar=Calendar.getInstance();
         Log.d("AddItemActivity", "onCreate");

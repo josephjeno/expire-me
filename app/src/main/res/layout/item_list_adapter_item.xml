@@ -57,10 +57,9 @@
                 android:id="@+id/itemExpirationAdapterItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
                 android:layout_marginBottom="10dp"
                 android:text="Expired 7/16/2019"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

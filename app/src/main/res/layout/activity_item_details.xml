@@ -13,6 +13,7 @@
         android:text="@string/show_item_name"
         android:textSize="30sp"
         android:layout_gravity="left"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -20,8 +21,8 @@
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp"
+        android:layout_marginTop="2dp"
+        android:textSize="28sp"
         android:layout_gravity="center"
         android:ems="10"
         android:inputType="text"
@@ -33,6 +34,7 @@
         android:paddingTop="40dp"
         android:textSize="30sp"
         android:layout_gravity="left"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -40,8 +42,8 @@
         android:id="@+id/item_expiration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="30sp"
+        android:layout_marginTop="2dp"
+        android:textSize="28sp"
         android:layout_gravity="center"
         android:ems="10"
         android:inputType="number"
@@ -53,6 +55,7 @@
         android:paddingTop="40dp"
         android:textSize="30sp"
         android:layout_gravity="left"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -61,8 +64,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp"
+        android:layout_marginTop="2dp"
+        android:textSize="28sp"
         android:ems="10"
         android:inputType="text"
         android:hint="@string/show_item_note_hint" />
@@ -72,6 +75,7 @@
         android:paddingTop="40dp"
         android:textSize="30sp"
         android:layout_gravity="left"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -80,8 +84,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp"
+        android:layout_marginTop="2dp"
+        android:textSize="28sp"
         android:ems="10"
         android:inputType="number"
         android:hint="@string/show_item_purchased_on_hint" />

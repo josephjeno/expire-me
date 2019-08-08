@@ -76,9 +76,9 @@ public class HomeActivity extends AppCompatActivity {
     String foundPlaceName;
     String foundPlaceAddress;
     double latitude;
-    double nearby_lat = 37;
+    double nearby_lat = 181;
     double longitude;
-    double nearby_lon = -122;
+    double nearby_lon = 181;
     private ComponentName componentName;
     private int jobId = 0;
 

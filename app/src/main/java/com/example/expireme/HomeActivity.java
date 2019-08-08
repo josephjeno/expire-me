@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     double nearby_lon = 181;
     private ComponentName componentName;
     private int jobId = 0;
+    static int jobDelayOffset = 0;
 
 
     @Override
@@ -242,7 +243,7 @@ public class HomeActivity extends AppCompatActivity {
                 " is " +
                 distanceFormat.format(distance(latitude, longitude, nearby_lat, nearby_lon)) +
                 " miles away, would you see it on the map?";
-        //Log.e("setLocationMessage", latitude + " " + longitude + " " + nearby_lat + " " + nearby_lon);
+        Log.e("setLocationMessage", latitude + " " + longitude + " " + nearby_lat + " " + nearby_lon);
         locationTextView.setVisibility(View.VISIBLE);
         locationTextView.setText(msg);
     }
@@ -251,12 +252,14 @@ public class HomeActivity extends AppCompatActivity {
     private void handlePlaces() {
         Log.e("handlePlaces", "start");
         String expiringState;
+
         if (expiredSize > 0 )
             expiringState = "expired";
         else if (soonSize > 0)
             expiringState = "expiring";
         else {
             locationTextView.setVisibility(View.GONE);
+            Log.e("handlePlaces", "nothing expiring/soon, returning");
             return;
         }
         // this is for mock testing
@@ -266,11 +269,13 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
         if (placesAquired) {// only get places once!
+            Log.e("handlePlaces", "place already acquired once");
             setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
+
             return;
         }
         if (!Places.isInitialized()) {
-
+            Log.e("initPlaces", "calling initialize()");
             Places.initialize(getApplicationContext(), apiKey);
         } else
             Log.e("initPlaces", "isInitialized, init not needed");
@@ -404,12 +409,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void scheduleJob() {
-        Log.e("Home:scheduleJob", "scheduleJob started");
+        Log.e("Home:scheduleJob", "scheduleJob started, jobDelayOffset="+jobDelayOffset);
         JobInfo.Builder builder = new JobInfo.Builder(jobId++, componentName);
         PersistableBundle extras = new PersistableBundle();
 
-        builder.setMinimumLatency(60 * 1000);
-        builder.setOverrideDeadline(70 * 1000);
+        builder.setMinimumLatency((jobDelayOffset+60) * 1000);
+        builder.setOverrideDeadline((jobDelayOffset+70) * 1000);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setRequiresDeviceIdle(false);
         builder.setRequiresCharging(false);
@@ -419,6 +424,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.e("Home:scheduleJob", "Scheduling job");
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(builder.build());
+        jobDelayOffset += 60;
     }
 }
 

@@ -17,11 +17,11 @@
 
         <ProgressBar
             android:id="@+id/itemProgressBar"
-            android:layout_marginTop="5dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar"
+            android:progressDrawable="@drawable/circular_progress_bar_green"
             android:background="@drawable/circle_shape"
             style="?android:attr/progressBarStyleHorizontal"
             android:max="100"
@@ -29,14 +29,14 @@
 
         <TextView
             android:id="@+id/itemCountdownAdapterItem"
-            android:layout_width="66dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:padding="9dp"
             android:text="2 months"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="match_parent"

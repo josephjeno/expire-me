@@ -2,16 +2,18 @@ package utils;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
@@ -115,7 +117,15 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
         holder.itemCountdown.setTextColor(getCountdownColor(item.daysUntilExpiration()));
-        holder.itemProgress.setProgress(getExpirationProgress(item));
+        
+        // Set progress bar color
+        int expirationPercent = getExpirationProgress(item);
+        if (expirationPercent == 100) {
+            holder.itemProgress.setProgressDrawable(context.getDrawable(R.drawable.circular_progress_bar_red));
+        } else if (expirationPercent >= 70) {
+            holder.itemProgress.setProgressDrawable(context.getDrawable(R.drawable.circular_progress_bar_yellow));
+        }
+        holder.itemProgress.setProgress(expirationPercent);
     }
 
     @Override
@@ -128,7 +138,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // Gets text to display for itemCountdown
     private String getCountdownText(long diffInDays) {
         if (diffInDays < 0) {
-            return "!";
+            return "Expired!";
         } else if (diffInDays < 1) {
             return "Today!";
         }else if (diffInDays == 1) {
@@ -145,11 +155,11 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // Gets color to display for countdown text
     private int getCountdownColor(long diffInDays) {
         if (diffInDays < 0) {
-            return Color.RED;
+            return Color.parseColor("#FB774E");
         } else if (diffInDays <= 3){
-            return Color.rgb(235, 140, 52);
+            return Color.parseColor("#F4A42D");
         } else {
-            return Color.rgb(52, 235, 61);
+            return Color.parseColor("#90C454");
         }
     }
 
@@ -162,10 +172,10 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
             // No added date set, set progress to 0
             progress = 0;
         } else {
+            Date now = new Date();
             long divisorInMillies = expirationDate.getTime() - addedDate.getTime();
-            if (divisorInMillies > 0) {
+            if (divisorInMillies > 0 && (expirationDate.getTime() > now.getTime())) {
                 // Calculate expiration percent
-                Date now = new Date();
                 long dividendInMillies = now.getTime() - addedDate.getTime();
                 double division = ((double) dividendInMillies / divisorInMillies) * 100;
                 progress = (int) division;

@@ -89,8 +89,10 @@ public class AddItemActivity extends AppCompatActivity {
         });
 
         // Set purchased date to today by default
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy");
-        itemAddedDateTextView.setText(dateFormat.format(new Date()));
+        if (itemAddedDateTextView.getText().length() == 0) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy");
+            itemAddedDateTextView.setText(dateFormat.format(new Date()));
+        }
 
         calendar=Calendar.getInstance();
         Log.d("AddItemActivity", "onCreate");

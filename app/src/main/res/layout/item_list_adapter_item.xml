@@ -15,6 +15,18 @@
         app:cardElevation="4dp"
         app:cardMaxElevation="4dp">
 
+        <ProgressBar
+            android:id="@+id/itemProgressBar"
+            android:layout_marginTop="5dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:background="@drawable/circle_shape"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+            android:progress="65" />
+
         <TextView
             android:id="@+id/itemCountdownAdapterItem"
             android:layout_width="66dp"

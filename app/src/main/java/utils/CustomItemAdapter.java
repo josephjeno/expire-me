@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.example.expireme.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> implements Filterable {
@@ -113,6 +115,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
         holder.itemCountdown.setTextColor(getCountdownColor(item.daysUntilExpiration()));
+        holder.itemProgress.setProgress(50);
+        getExpirationProgress(item);
     }
 
     @Override
@@ -148,6 +152,25 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         } else {
             return Color.rgb(52, 235, 61);
         }
+    }
+
+    private int getExpirationProgress(FoodItem item) {
+        Date expirationDate = item.getDateExpiration();
+        Date addedDate = item.getDateFromString(item.getDateAdded());
+        long diffInMillies;
+
+//        try {
+//            diffInMillies = expirationDate.getTime() - addedDate.getTime();
+//        } catch (Error e) {
+//            diffInMillies = 0;
+//        }
+
+        Log.d("PROGRESS", "getExpirationProgress: expirationDate " + expirationDate);
+        Log.d("PROGRESS", "getExpirationProgress: addedDate " + addedDate);
+
+//        Log.d("PROGRESS", "getExpirationProgress: subtracted " + diffInMillies);
+
+        return 0;
     }
 
     // Used to filter list
@@ -189,12 +212,14 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         TextView itemName;
         TextView itemExpiration;
         TextView itemCountdown;
+        ProgressBar itemProgress;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.itemNameAdapterItem);
             itemExpiration = itemView.findViewById(R.id.itemExpirationAdapterItem);
             itemCountdown = itemView.findViewById(R.id.itemCountdownAdapterItem);
+            itemProgress = itemView.findViewById(R.id.itemProgressBar);
             itemView.setOnClickListener(this);
         }
 

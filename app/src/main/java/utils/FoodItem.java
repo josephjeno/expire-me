@@ -23,7 +23,7 @@ public class FoodItem {
         this.note = note;
         this.dateAdded = dateAdded;
         this.expiryDate = expiryDate;
-        this.dateExpiration = getDateFromString();
+        this.dateExpiration = getDateFromString(expiryDate);
     }
 
     public String getName() {
@@ -71,10 +71,10 @@ public class FoodItem {
     public void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
 
     // Converts String into date
-    private Date getDateFromString() {
+    public Date getDateFromString(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         try {
-            return sdf.parse(expiryDate);
+            return sdf.parse(date);
         } catch (ParseException e) {
             Log.v("Exception", e.getLocalizedMessage());
             return null;

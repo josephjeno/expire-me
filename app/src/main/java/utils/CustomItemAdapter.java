@@ -43,6 +43,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     private FoodItem recentlyDeleted;
     private int recentlyDeletedPosition;
 
+    private Snackbar snackbar;
+
     private ItemClickListener myClickListener;
 
     public CustomItemAdapter(Context context, String listType, RecyclerView recyclerView) {
@@ -78,6 +80,14 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // Deletes item from DB and list and refreshes view
     public void deleteItem(int position) {
+
+        // In case prior snackbar is already displayed, remove and delete previous item
+        if (snackbar != null) {
+            if (snackbar.isShown()) {
+                dbHelper.deleteItem(recentlyDeleted.getId());
+            }
+        }
+
         recentlyDeleted = itemsFiltered.get(position);
         recentlyDeletedPosition = position;
         itemsFiltered.remove(position);
@@ -86,7 +96,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     }
 
     private void displayUndoSnackbar() {
-        Snackbar snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
         snackbar.setAction("UNDO", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

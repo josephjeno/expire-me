@@ -115,8 +115,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
         holder.itemCountdown.setTextColor(getCountdownColor(item.daysUntilExpiration()));
-        holder.itemProgress.setProgress(50);
-        getExpirationProgress(item);
+        holder.itemProgress.setProgress(getExpirationProgress(item));
     }
 
     @Override
@@ -154,23 +153,28 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         }
     }
 
+    // Gets progress towards expiration
     private int getExpirationProgress(FoodItem item) {
         Date expirationDate = item.getDateExpiration();
         Date addedDate = item.getDateFromString(item.getDateAdded());
-        long diffInMillies;
-
-//        try {
-//            diffInMillies = expirationDate.getTime() - addedDate.getTime();
-//        } catch (Error e) {
-//            diffInMillies = 0;
-//        }
-
-        Log.d("PROGRESS", "getExpirationProgress: expirationDate " + expirationDate);
-        Log.d("PROGRESS", "getExpirationProgress: addedDate " + addedDate);
-
-//        Log.d("PROGRESS", "getExpirationProgress: subtracted " + diffInMillies);
-
-        return 0;
+        int progress;
+        if (addedDate == null) {
+            // No added date set, set progress to 0
+            progress = 0;
+        } else {
+            long divisorInMillies = expirationDate.getTime() - addedDate.getTime();
+            if (divisorInMillies > 0) {
+                // Calculate expiration percent
+                Date now = new Date();
+                long dividendInMillies = now.getTime() - addedDate.getTime();
+                double division = ((double) dividendInMillies / divisorInMillies) * 100;
+                progress = (int) division;
+            } else {
+                // Item is already expired, set progress to 100
+                progress = 100;
+            }
+        }
+        return progress;
     }
 
     // Used to filter list

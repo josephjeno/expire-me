@@ -118,7 +118,9 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
         holder.itemCountdown.setTextColor(getCountdownColor(expirationPercent));
+        Log.e("onBindViewHolder", "item=" + item.getName() + " setting progess %=" + expirationPercent);
 
+        holder.itemProgress.setProgress(0);
         // Set progress bar color
         if (expirationPercent == 100) {
             holder.itemProgress.setProgressDrawable(context.getDrawable(R.drawable.circular_progress_bar_red));

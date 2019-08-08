@@ -113,13 +113,13 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         FoodItem item = itemsFiltered.get(position);
+        int expirationPercent = getExpirationProgress(item);
         holder.itemName.setText(item.getName());
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
-        holder.itemCountdown.setTextColor(getCountdownColor(item.daysUntilExpiration()));
-        
+        holder.itemCountdown.setTextColor(getCountdownColor(expirationPercent));
+
         // Set progress bar color
-        int expirationPercent = getExpirationProgress(item);
         if (expirationPercent == 100) {
             holder.itemProgress.setProgressDrawable(context.getDrawable(R.drawable.circular_progress_bar_red));
         } else if (expirationPercent >= 70) {
@@ -153,10 +153,10 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     }
 
     // Gets color to display for countdown text
-    private int getCountdownColor(long diffInDays) {
-        if (diffInDays < 0) {
+    private int getCountdownColor(int expirationPercent) {
+        if (expirationPercent == 100) {
             return Color.parseColor("#FB774E");
-        } else if (diffInDays <= 3){
+        } else if (expirationPercent >= 70){
             return Color.parseColor("#F4A42D");
         } else {
             return Color.parseColor("#90C454");

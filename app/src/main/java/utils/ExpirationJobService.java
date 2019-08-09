@@ -22,11 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ExpirationJobService extends JobService {
-    String CHANNEL_ID = "1";
-    int intentId = 100;
-    NotificationManager notificationManager;
-    int notificationId = 9;
-    DatabaseHelper dbHelper;
+    private final String CHANNEL_ID = "1";
+    private final int intentId = 100;
+    private final int notificationId = 9;
+    private DatabaseHelper dbHelper;
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -35,12 +34,12 @@ public class ExpirationJobService extends JobService {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
             channel.setDescription(description);
-            notificationManager = getSystemService(NotificationManager.class);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    public void myJobNotify() {
+    private void myJobNotify() {
         createNotificationChannel();
         Intent new_intent = new Intent(this, HomeActivity.class);
         new_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

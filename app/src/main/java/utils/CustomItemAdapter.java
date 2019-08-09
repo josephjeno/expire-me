@@ -11,6 +11,7 @@ import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expireme.R;
@@ -25,20 +26,20 @@ import java.util.Date;
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> implements Filterable {
 
     // Receive the context from ItemListActivity
-    private Context context;
+    private final Context context;
 
     // ArrayList with the item expiration data points to populate adapter
     private ArrayList<FoodItem> items;
     private ArrayList<FoodItem> itemsFiltered;
 
     // Database helper
-    private DatabaseHelper dbHelper;
+    private final DatabaseHelper dbHelper;
 
     // Filter for item list ("ALL", "SOON", "EXPIRED")
-    private String listType;
+    private final String listType;
 
     // Used for undo button
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
     private FoodItem recentlyDeleted;
     private int recentlyDeletedPosition;
 
@@ -115,13 +116,13 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // RecyclerView ADAPTER OVERRIDE METHODS
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_list_adapter_item,parent,false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         FoodItem item = itemsFiltered.get(position);
         int expirationPercent = getExpirationProgress(item);
         holder.itemName.setText(item.getName());
@@ -235,12 +236,12 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView itemName;
-        TextView itemExpiration;
-        TextView itemCountdown;
-        ProgressBar itemProgress;
+        final TextView itemName;
+        final TextView itemExpiration;
+        final TextView itemCountdown;
+        final ProgressBar itemProgress;
 
-        public MyViewHolder(View itemView) {
+        private MyViewHolder(View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.itemNameAdapterItem);
             itemExpiration = itemView.findViewById(R.id.itemExpirationAdapterItem);

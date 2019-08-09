@@ -1,5 +1,6 @@
 package com.example.expireme;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,19 +18,19 @@ import utils.FoodItem;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
-    static final int EDIT_ITEM = 0;
-    boolean requestRefresh = false;
+    private static final int EDIT_ITEM = 0;
+    private boolean requestRefresh = false;
 
-    TextView itemNameTextView;
-    TextView itemExpirationTextView;
-    TextView itemNotesTextView;
-    TextView itemNotesTitleTextView;
-    TextView itemAddedDateTextView;
-    TextView itemAddedDateTitleTextView;
+    private TextView itemNameTextView;
+    private TextView itemExpirationTextView;
+    private TextView itemNotesTextView;
+    private TextView itemNotesTitleTextView;
+    private TextView itemAddedDateTextView;
+    private TextView itemAddedDateTitleTextView;
     private Long itemID;
-    String itemName;
-    FoodItem food;
-    DatabaseHelper dbHelper;
+    private String itemName;
+    private FoodItem food;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
 
     // When Delete Button is clicked
-    public void onDeleteButtonClicked(){
+    private void onDeleteButtonClicked(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(itemName);
         alert.setMessage("Are you sure you want to delete " + itemName +"?");
@@ -112,7 +113,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
 
     // When Edit Button is clicked
-    public void onEditButtonClicked(){
+    private void onEditButtonClicked(){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
         intent.putExtra("userIntent", "editItem");
         intent.putExtra("food", itemID);

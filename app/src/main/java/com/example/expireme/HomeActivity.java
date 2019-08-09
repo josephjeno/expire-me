@@ -58,27 +58,27 @@ import static android.Manifest.permission.ACCESS_WIFI_STATE;
 
 public class HomeActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
-    ArrayList<FoodItem> foodItems = new ArrayList<>();
-    String apiKey = ""; // TODO: will be committed to release version only
-    static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
-    TextView locationTextView;
-    TextView allItemsNumberTextView;
-    TextView expiringSoonItemsNumberTextView;
-    TextView expiredItemsNumberTextView;
-    static final int ADD_ITEM = 1;
-    int allSize;
-    int soonSize;
-    int expiredSize;
-    boolean placesAcquired = false;
-    String foundPlaceName;
-    String foundPlaceAddress;
-    double latitude;
-    double nearby_lat = 181;
-    double longitude;
-    double nearby_lon = 181;
+    private ArrayList<FoodItem> foodItems = new ArrayList<>();
+    private final String apiKey = ""; // TODO: will be committed to release version only
+    private static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    private TextView locationTextView;
+    private TextView allItemsNumberTextView;
+    private TextView expiringSoonItemsNumberTextView;
+    private TextView expiredItemsNumberTextView;
+    private static final int ADD_ITEM = 1;
+    private int allSize;
+    private int soonSize;
+    private int expiredSize;
+    private boolean placesAcquired = false;
+    private String foundPlaceName;
+    private String foundPlaceAddress;
+    private double latitude;
+    private double nearby_lat = 181;
+    private double longitude;
+    private double nearby_lon = 181;
     private ComponentName componentName;
     private int jobId = 0;
-    static int jobDelayOffset = 0;
+    private static int jobDelayOffset = 0;
 
 
     @Override
@@ -139,8 +139,7 @@ public class HomeActivity extends AppCompatActivity {
             lon = nearby_lon;
         }
         DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-        String output = "geo:" + lonlatFormat.format(lat) + "," + lonlatFormat.format(lon);
-        return output;
+        return "geo:" + lonlatFormat.format(lat) + "," + lonlatFormat.format(lon);
     }
 
     private void askUserForWifiPermission() {
@@ -160,7 +159,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,@NonNull  String[] permissions,@NonNull  int[] grantResults) {
         if (requestCode == EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 updateLocation();
@@ -222,7 +221,6 @@ public class HomeActivity extends AppCompatActivity {
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.e("checkSelfPermission", "no location permissions");
-            return;
         } else {
             Log.e("checkSelfPermission", "got permissions");
             handlePlaces();
@@ -326,7 +324,7 @@ public class HomeActivity extends AppCompatActivity {
         //currentPlaceTask.addOnCompleteListener(task -> Log.e("findCurrentPlace", "addOnCompleteListener"));
     }
 
-    public float distance (double lat_a, double lng_a, double lat_b, double lng_b )
+    private float distance (double lat_a, double lng_a, double lat_b, double lng_b )
     {
         Log.e("distance", lat_a + " " + lng_a + " " + lat_b + " " + lng_b);
         if (lat_a>180)
@@ -339,7 +337,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // Returns list of FoodItems from DB filtered by listType ("ALL", "SOON", "EXPIRED")
-    public ArrayList<FoodItem> getFilteredItems(String listType) {
+    private ArrayList<FoodItem> getFilteredItems(String listType) {
         ArrayList<FoodItem> items = new ArrayList<>();
         if (listType != null && !listType.equals("ALL")) {
             Date currentDate = new Date();
@@ -405,7 +403,7 @@ public class HomeActivity extends AppCompatActivity {
         scheduleJob();
     }
 
-    public void scheduleJob() {
+    private void scheduleJob() {
         Log.e("Home:scheduleJob", "scheduleJob started, jobDelayOffset="+jobDelayOffset);
         JobInfo.Builder builder = new JobInfo.Builder(jobId++, componentName);
         PersistableBundle extras = new PersistableBundle();

@@ -1,10 +1,9 @@
 package com.example.expireme;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,16 +29,12 @@ import utils.StoredFood;
 
 public class AddItemActivity extends AppCompatActivity {
 
-    ImageButton checkButton;
+    private AutoCompleteTextView itemNameTextView;
+    private TextView itemExpirationTextView;
+    private TextView itemNotesTextView;
+    private TextView itemAddedDateTextView;
 
-    AutoCompleteTextView itemNameTextView;
-    TextView itemExpirationTextView;
-    TextView itemNotesTextView;
-    TextView itemAddedDateTextView;
-
-    Calendar calendar;
-    int year,month,dayOfMonth;
-    DatePickerDialog datePickerDialog;
+    private Calendar calendar;
 
     private String userIntent;
     private FoodItem foodItem = null;
@@ -106,9 +100,6 @@ public class AddItemActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add new Item");
         }
 
-        //backButton = findViewById(R.id.add_item_button_back);
-        checkButton = findViewById(R.id.add_item_check_button);
-
         itemExpirationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +135,7 @@ public class AddItemActivity extends AppCompatActivity {
 
     // Used to handle custom Action Bar button clicks
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
@@ -171,7 +162,7 @@ public class AddItemActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onCheckButtonClicked() {
+    private void onCheckButtonClicked() {
         // verify minimum-requirements data name+expiration were given
         String itemName = itemNameTextView.getText().toString();
         String itemExpirationDate = itemExpirationTextView.getText().toString();
@@ -225,54 +216,30 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    public Integer daysBetween(Date d1, Date d2){
+    private Integer daysBetween(Date d1, Date d2){
         return (int)( (d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
     }
     //display date picker dialog
-    public void datePicker(final TextView date) {
-        year=calendar.get(Calendar.YEAR);
-        month=calendar.get(Calendar.MONTH);
-        dayOfMonth=calendar.get(Calendar.DAY_OF_MONTH);
+    private void datePicker(final TextView date) {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         Log.d("AddItemActivity", "datePicker");
 
-        datePickerDialog = new DatePickerDialog(AddItemActivity.this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddItemActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                myOnDateSet(date, datePicker, i, i1,i2);
+                myOnDateSet(date, i, i1,i2);
 
             }
         }, year, month, dayOfMonth);
         datePickerDialog.show();
     }
 
-    public void myOnDateSet(TextView date, DatePicker view, int year, int month, int dayOfMonth) {
+    private void myOnDateSet(TextView date, int year, int month, int dayOfMonth) {
         Log.d("AddItemActivity", "onDateSet");
         date.setText((month+1) + "-" + dayOfMonth + "-" + year);
     }
-
-    public void updateFood(final FoodItem foodItem, final DatabaseHelper dbHelper, final View view){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(foodItem.getName());
-        alert.setMessage("Are you sure you want to update " + foodItem.getName() +"?");
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                        dbHelper.updateItem(foodItem);
-                        String message = foodItem.getName() + " has been updated";
-                        Toast toast = Toast.makeText(
-                            getApplicationContext(),
-                            message,
-                            Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-                });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                }
-                });
-                alert.show();
-            }
-
 }
 
 

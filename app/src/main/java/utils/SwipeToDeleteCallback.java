@@ -18,10 +18,10 @@ import com.example.expireme.R;
  */
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    private CustomItemAdapter myAdapter;
+    private final CustomItemAdapter myAdapter;
 
     // Trashcan that appears when user swipes left or right
-    private Drawable trashIcon;
+    private final Drawable trashIcon;
 
     // Background that appears behind item when swiping
     private final ColorDrawable itemSwipeBackground;
@@ -95,7 +95,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     // Items in list can't be moved, are sorted by date
     @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+    public boolean onMove(@NonNull RecyclerView recyclerView,@NonNull  RecyclerView.ViewHolder viewHolder,@NonNull  RecyclerView.ViewHolder target) {
         return false;
     }
 }

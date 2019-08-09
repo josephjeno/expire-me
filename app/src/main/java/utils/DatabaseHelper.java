@@ -110,12 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(StoredFoodItems.TABLE_NAME, null, values);
 
-        if (result == -1){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return !(result == -1);
     }
 
     private FoodItem getFoodItemFromCursor(Cursor cursor) {

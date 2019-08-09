@@ -26,21 +26,21 @@ import utils.SwipeToDeleteCallback;
 public class ItemListActivity extends AppCompatActivity implements CustomItemAdapter.ItemClickListener {
 
     // Request Code used to start Item Details activity
-    static final int SHOW_ITEM = 0;
-    static final int ADD_ITEM = 1;
-    boolean refreshRequired = false;
+    private static final int SHOW_ITEM = 0;
+    private static final int ADD_ITEM = 1;
+    private boolean refreshRequired = false;
 
     // View that displays list of items
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     // Helper that controls item swipes
-    ItemTouchHelper itemTouchHelper;
+    private ItemTouchHelper itemTouchHelper;
 
     // Custom adapter for displaying food items
-    CustomItemAdapter myAdapter;
+    private CustomItemAdapter myAdapter;
 
     // Filter for item list ("ALL", "SOON", "EXPIRED")
-    String listType;
+    private String listType;
 
     // View used for searching
     private SearchView searchView;

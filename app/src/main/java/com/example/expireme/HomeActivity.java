@@ -128,12 +128,12 @@ public class HomeActivity extends AppCompatActivity {
         DecimalFormat lonlatFormat = new DecimalFormat("####.####");
         String geoString;
         if (nearby_lon == 181) {
-            lat = latitude;
-            lon = longitude;
+            //lat = latitude;
+            //lon = longitude;
             geoString = "https://www.google.com/maps/search/?api=1&query=supermarket+grocery";
         } else {
-            lat = nearby_lat;
-            lon = nearby_lon;
+            //lat = nearby_lat;
+            //lon = nearby_lon;
             geoString = "https://www.google.com/maps/search/?api=1&query=" + "supermarket+grocery" +"&query_place_id=" + foundPlaceId;
         }
         return geoString;

@@ -72,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean placesAcquired = false;
     private String foundPlaceName;
     private String foundPlaceAddress;
+    private String foundPlaceId;
     private double latitude;
     private double nearby_lat = 181;
     private double longitude;
@@ -139,7 +140,8 @@ public class HomeActivity extends AppCompatActivity {
             lon = nearby_lon;
         }
         DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-        return "geo:" + lonlatFormat.format(lat) + "," + lonlatFormat.format(lon);
+        return "https://www.google.com/maps/search/?api=1&query=" +
+                lonlatFormat.format(lat) + "," + lonlatFormat.format(lon) +"&query_place_id=" + foundPlaceId;
     }
 
     private void askUserForWifiPermission() {
@@ -283,6 +285,7 @@ public class HomeActivity extends AppCompatActivity {
                 Place.Field.ADDRESS,
                 Place.Field.TYPES,
                 Place.Field.NAME,
+                Place.Field.ID,
                 Place.Field.LAT_LNG
         );
 
@@ -302,6 +305,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (type.toString().equals("SUPERMARKET") ) {
                         foundPlaceName = placeLikelihood.getPlace().getName();
                         foundPlaceAddress = placeLikelihood.getPlace().getAddress();
+                        foundPlaceId = placeLikelihood.getPlace().getId();
                         found = true;
                         nearby_lat = placeLikelihood.getPlace().getLatLng().latitude;
                         nearby_lon = placeLikelihood.getPlace().getLatLng().longitude;

@@ -237,8 +237,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while(listIterator.hasNext()) {
                 FoodItem item = listIterator.next();
                 // check if result of student is "Fail"
-                long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
-                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                long diffInMilliseconds = item.getDateExpiration().getTime() - currentDate.getTime();
+                long diffInDays = TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
                 if (listType.equals("EXPIRED")) {
                     if (diffInDays >= 0)
                         listIterator.remove();

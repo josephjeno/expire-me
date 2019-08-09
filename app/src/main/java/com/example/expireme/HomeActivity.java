@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -22,7 +20,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -72,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
     int allSize;
     int soonSize;
     int expiredSize;
-    boolean placesAquired = false;
+    boolean placesAcquired = false;
     String foundPlaceName;
     String foundPlaceAddress;
     double latitude;
@@ -268,7 +265,7 @@ public class HomeActivity extends AppCompatActivity {
             setLocationMessage("Wollaston's Market", "369 Huntington Ave, Boston, MA 02115", expiringState);
             return;
         }
-        if (placesAquired) {// only get places once!
+        if (placesAcquired) {// only get places once!
             Log.e("handlePlaces", "place already acquired once");
             setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
 
@@ -293,7 +290,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FindCurrentPlaceRequest currentPlaceRequest = FindCurrentPlaceRequest.newInstance(listFields);
         Task<FindCurrentPlaceResponse> currentPlaceTask = placesClient.findCurrentPlace(currentPlaceRequest);
-        placesAquired = true;
+        placesAcquired = true;
         currentPlaceTask.addOnSuccessListener((response) -> {
             Log.e("addOnSuccessListener", "success");
             boolean found = false;
@@ -347,8 +344,8 @@ public class HomeActivity extends AppCompatActivity {
         if (listType != null && !listType.equals("ALL")) {
             Date currentDate = new Date();
             for (FoodItem item: foodItems) {
-                long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
-                long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                long diffInMilliseconds = item.getDateExpiration().getTime() - currentDate.getTime();
+                long diffInDays = TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
                 if (listType.equals("EXPIRED")) {
                     if (diffInDays < 0)
                         items.add(item);

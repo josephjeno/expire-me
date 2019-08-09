@@ -209,7 +209,7 @@ public class AddItemActivity extends AppCompatActivity {
                 );
                 dbHelper.addStoredFoodItem(storedFood);
             }catch (Exception e){
-                Log.d("AddItemAcitivity", "onCheckButtonClicked: " + e.toString());
+                Log.d("AddItemActivity", "onCheckButtonClicked: " + e.toString());
             }
 
             finishAddItem();

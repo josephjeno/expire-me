@@ -1,7 +1,7 @@
 package utils;
 
 /**
- * Represents a food item that a user has previously saved in the database. Used to autopopulate
+ * Represents a food item that a user has previously saved in the database. Used to auto-populate
  * expiration dates when a user adds a previously added food item, expediting item entry.
  */
 public class StoredFood {

@@ -80,7 +80,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
     // Deletes item from DB and list and refreshes view
     public void deleteItem(int position) {
 
-        // In case prior snackbar is already displayed, remove and delete previous item
+        // In case prior snackBar is already displayed, remove and delete previous item
         if (snackbar != null) {
             if (snackbar.isShown()) {
                 dbHelper.deleteItem(recentlyDeleted.getId());
@@ -91,10 +91,10 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         recentlyDeletedPosition = position;
         itemsFiltered.remove(position);
         notifyItemRemoved(position);
-        displayUndoSnackbar();
+        displayUndoSnackBar();
     }
 
-    private void displayUndoSnackbar() {
+    private void displayUndoSnackBar() {
         snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
         snackbar.setAction("UNDO", new View.OnClickListener() {
             @Override
@@ -112,7 +112,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         snackbar.show();
     }
 
-    // RECYCLERVIEW ADAPTER OVERRIDE METHODS
+    // RecyclerView ADAPTER OVERRIDE METHODS
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -128,7 +128,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
         holder.itemExpiration.setText(item.getExpiryDate());
         holder.itemCountdown.setText(getCountdownText(item.daysUntilExpiration()));
         holder.itemCountdown.setTextColor(getCountdownColor(expirationPercent));
-        Log.e("onBindViewHolder", "item=" + item.getName() + " setting progess %=" + expirationPercent);
+        Log.e("onBindViewHolder", "item=" + item.getName() + " setting progress %=" + expirationPercent);
 
         holder.itemProgress.setProgress(0);
         // Set progress bar color
@@ -185,11 +185,11 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
             progress = 0;
         } else {
             Date now = new Date();
-            long divisorInMillies = expirationDate.getTime() - addedDate.getTime();
-            if (divisorInMillies > 0 && (expirationDate.getTime() > now.getTime())) {
+            long divisorInMilliseconds = expirationDate.getTime() - addedDate.getTime();
+            if (divisorInMilliseconds > 0 && (expirationDate.getTime() > now.getTime())) {
                 // Calculate expiration percent
-                long dividendInMillies = now.getTime() - addedDate.getTime();
-                double division = ((double) dividendInMillies / divisorInMillies) * 100;
+                long dividendInMilliseconds = now.getTime() - addedDate.getTime();
+                double division = ((double) dividendInMilliseconds / divisorInMilliseconds) * 100;
                 progress = (int) division;
             } else {
                 // Item is already expired, set progress to 100

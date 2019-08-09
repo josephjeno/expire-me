@@ -85,8 +85,8 @@ public class ExpirationJobService extends JobService {
         Date currentDate = new Date();
 
         for (FoodItem item: foodItems) {
-            long diffInMillies = item.getDateExpiration().getTime() - currentDate.getTime();
-            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            long diffInMilliseconds = item.getDateExpiration().getTime() - currentDate.getTime();
+            long diffInDays = TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
             if (diffInDays < 0) {
                 Log.e("onStartJob", "found expired items, sending notification");
                 myJobNotify();

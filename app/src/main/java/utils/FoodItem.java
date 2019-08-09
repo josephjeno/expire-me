@@ -93,8 +93,8 @@ public class FoodItem {
         calDate.set(Calendar.SECOND, 0);
         calDate.set(Calendar.MILLISECOND, 0);
         Date currentDate = calDate.getTime();
-        long diffInMillies = this.dateExpiration.getTime() - currentDate.getTime();
-        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffInMilliseconds = this.dateExpiration.getTime() - currentDate.getTime();
+        return TimeUnit.DAYS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
     }
 
 }

@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean placesAcquired = false;
     private String foundPlaceName;
     //private String foundPlaceAddress;
-    private String foundPlaceId;
+    private String foundPlaceId = null;
     private double latitude;
     private double nearby_lat = 181;
     private double longitude;
@@ -125,16 +125,18 @@ public class HomeActivity extends AppCompatActivity {
         // "geo:37.7749,-122.4194"
         double lat;
         double lon;
+        DecimalFormat lonlatFormat = new DecimalFormat("####.####");
+        String geoString;
         if (nearby_lon == 181) {
             lat = latitude;
             lon = longitude;
+            geoString = "https://www.google.com/maps/search/?api=1&query=supermarket+grocery";
         } else {
             lat = nearby_lat;
             lon = nearby_lon;
+            geoString = "https://www.google.com/maps/search/?api=1&query=" + "supermarket+grocery" +"&query_place_id=" + foundPlaceId;
         }
-        DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-        return "https://www.google.com/maps/search/?api=1&query=" +
-                lonlatFormat.format(lat) + "," + lonlatFormat.format(lon) +"&query_place_id=" + foundPlaceId;
+        return geoString;
     }
 
     private void askUserForWifiPermission() {
@@ -220,7 +222,7 @@ public class HomeActivity extends AppCompatActivity {
 
         String msg;
         if (name == null)
-            msg = "Unfortunately, there's no supermarket nearby.";
+            msg = "Open maps to find nearby supermarkets or grocery stores.";
         else
             msg = name +
                 " is " +
@@ -245,7 +247,7 @@ public class HomeActivity extends AppCompatActivity {
         String apiKey = "";
         if (apiKey.equals("")) {
             //Toast.makeText(this, "API Key not defined, unable to show nearby places", Toast.LENGTH_LONG).show();
-            setLocationMessage("Wollaston's Market");
+            setLocationMessage(null);
             return;
         }
         if (placesAcquired) {// only get places once!
@@ -279,6 +281,7 @@ public class HomeActivity extends AppCompatActivity {
             Log.e("addOnSuccessListener", "success");
             boolean found = false;
             for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                Log.e("placeLikelihood" , "i=" + placeLikelihood.getLikelihood());
                 Log.e("placeLikelihood" , "name=" + placeLikelihood.getPlace().getName());
                 Log.e("placeLikelihood" , "types size=" + placeLikelihood.getPlace().getTypes().size());
                 for (Place.Type type : placeLikelihood.getPlace().getTypes()) {

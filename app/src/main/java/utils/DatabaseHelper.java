@@ -10,9 +10,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean addFoodItem(FoodItem item){
+    public void addFoodItem(FoodItem item){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FoodItemEntry.COLUMN_NAME_FOOD_NAME, item.getName());
@@ -96,21 +96,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(FoodItemEntry.COLUMN_NAME_DATE_ADDED, item.getDateAdded());
         values.put(FoodItemEntry.COLUMN_NAME_EXPIRY_DATE, item.getExpiryDate());
 
-        long result = db.insert(FoodItemEntry.TABLE_NAME, null, values);
-
-        return result != -1;
+        db.insert(FoodItemEntry.TABLE_NAME, null, values);
     }
 
-    public boolean addStoredFoodItem(StoredFood item){
+    public void addStoredFoodItem(StoredFood item){
         Log.d("DB", "addStoredFoodItem: " + item.getDays().toString());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(StoredFoodItems.COLUMN_NAME_ITEM, item.getName());
         values.put(StoredFoodItems.COLUMN_NAME_DAYS, item.getDays());
 
-        long result = db.insert(StoredFoodItems.TABLE_NAME, null, values);
-
-        return !(result == -1);
+        db.insert(StoredFoodItems.TABLE_NAME, null, values);
     }
 
     private FoodItem getFoodItemFromCursor(Cursor cursor) {
@@ -154,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         cursor.moveToNext();
         FoodItem foodItem = getFoodItemFromCursor(cursor);
-        Log.d("getItemById", foodItem.getName());
+        Log.d("getItemById", Objects.requireNonNull(foodItem).getName());
         return foodItem;
     }
 
@@ -182,12 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             foodItems.add(getFoodItemFromCursor(cursor));
         }
         // now sort these items according to expiration date
-        Collections.sort(foodItems, new Comparator<FoodItem>() {
-            @Override
-            public int compare(FoodItem o1, FoodItem o2) {
-                return o1.getDateExpiration().compareTo(o2.getDateExpiration());
-            }
-        });
+        Collections.sort(foodItems, (o1, o2) -> o1.getDateExpiration().compareTo(o2.getDateExpiration()));
         return foodItems;
     }
 
@@ -246,15 +237,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return items;
     }
 
-    public boolean deleteItem(Long itemId){
+    public void deleteItem(Long itemId){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = FoodItemEntry._ID + "=?";
         String[] selectionArgs = {itemId.toString()};
-        int deletedRows = db.delete(FoodItemEntry.TABLE_NAME, selection, selectionArgs);
-        return deletedRows == 1;
+        db.delete(FoodItemEntry.TABLE_NAME, selection, selectionArgs);
     }
 
-    public boolean updateItem(FoodItem item){
+    public void updateItem(FoodItem item){
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -267,8 +257,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String selection = FoodItemEntry._ID + "=?";
         String[] selectionArgs = {item.getId().toString()};
 
-        int count = db.update(FoodItemEntry.TABLE_NAME, values, selection, selectionArgs);
-
-        return count == 1;
+        db.update(FoodItemEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 }

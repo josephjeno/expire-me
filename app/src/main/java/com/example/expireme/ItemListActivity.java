@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Objects;
+
 import utils.CustomItemAdapter;
 import utils.SwipeToDeleteCallback;
 
@@ -29,12 +31,6 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     private static final int SHOW_ITEM = 0;
     private static final int ADD_ITEM = 1;
     private boolean refreshRequired = false;
-
-    // View that displays list of items
-    private RecyclerView recyclerView;
-
-    // Helper that controls item swipes
-    private ItemTouchHelper itemTouchHelper;
 
     // Custom adapter for displaying food items
     private CustomItemAdapter myAdapter;
@@ -57,14 +53,16 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
         configureActionBar();
 
         // Configures RecyclerView
-        recyclerView = findViewById(R.id.myRecyclerView);
+        // View that displays list of items
+        RecyclerView recyclerView = findViewById(R.id.myRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         myAdapter = new CustomItemAdapter(this, listType, recyclerView);
         myAdapter.setClickListener(this);
         recyclerView.setAdapter(myAdapter);
 
         // Helper that controls item swipes (left to delete, right to edit, hold to select multiple)
-        itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
+        // Helper that controls item swipes
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
@@ -84,7 +82,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
 
         // listening to search query text change
@@ -133,7 +131,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
 
     // Navigates to Item Details screen when item is selected from the list
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(int position) {
         // Trigger the next activity (ItemDetails)
         Intent intent = new Intent(ItemListActivity.this, ItemDetailsActivity.class);
         // Pass in the item name to item details activity
@@ -154,7 +152,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
     // Sets title of List Activity to filtered item name and enables back button
     private void configureActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         if (listType == null || listType.equals("ALL"))
             actionBar.setTitle("All Items");
         else if (listType.equals("SOON"))

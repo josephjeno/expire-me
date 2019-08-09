@@ -8,11 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +19,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 
 import utils.DatabaseHelper;
 import utils.FoodItem;
@@ -48,7 +46,7 @@ public class AddItemActivity extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -65,26 +63,23 @@ public class AddItemActivity extends AppCompatActivity {
         days.toArray(foodDays);
         Log.d("Array:", "onCreate: " + days.toString());
         ArrayAdapter<String> foodAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, foodNames );
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, foodNames);
         itemNameTextView.setAdapter(foodAdapter);
         itemExpirationTextView = findViewById(R.id.editTextExpirationDate);
         itemNotesTextView = findViewById(R.id.add_item_notes);
         itemAddedDateTextView = findViewById(R.id.editTextPurchasedOnDate);
 
-        itemNameTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-                Date date = new Date();
-                String time = sdf.format(date);
-                itemAddedDateTextView.setText(time);
+        itemNameTextView.setOnItemClickListener((adapterView, view, i, l) -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            Date date = new Date();
+            String time = sdf.format(date);
+            itemAddedDateTextView.setText(time);
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                calendar.add(Calendar.DAY_OF_MONTH, foodDays[i]);
-                Date expirationDate = calendar.getTime();
-                itemExpirationTextView.setText(sdf.format(expirationDate));
-            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, foodDays[i]);
+            Date expirationDate = calendar.getTime();
+            itemExpirationTextView.setText(sdf.format(expirationDate));
         });
 
         dbHelper = new DatabaseHelper(getApplicationContext());
@@ -100,20 +95,14 @@ public class AddItemActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add new Item");
         }
 
-        itemExpirationTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
-                datePicker(itemExpirationTextView);
-            }
+        itemExpirationTextView.setOnClickListener(v -> {
+            Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
+            datePicker(itemExpirationTextView);
         });
 
-        itemAddedDateTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
-                datePicker(itemAddedDateTextView);
-            }
+        itemAddedDateTextView.setOnClickListener(v -> {
+            Log.d("AddItemActivity", "onCreate.date.setOnClickListener.onClick");
+            datePicker(itemAddedDateTextView);
         });
 
         // Set purchased date to today by default
@@ -226,13 +215,7 @@ public class AddItemActivity extends AppCompatActivity {
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         Log.d("AddItemActivity", "datePicker");
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(AddItemActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                myOnDateSet(date, i, i1,i2);
-
-            }
-        }, year, month, dayOfMonth);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddItemActivity.this, (datePicker, i, i1, i2) -> myOnDateSet(date, i, i1,i2), year, month, dayOfMonth);
         datePickerDialog.show();
     }
 

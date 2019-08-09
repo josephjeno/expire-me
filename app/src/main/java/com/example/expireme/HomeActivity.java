@@ -29,8 +29,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.android.libraries.places.api.Places;
@@ -45,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import utils.DatabaseHelper;
@@ -59,14 +57,12 @@ import static android.Manifest.permission.ACCESS_WIFI_STATE;
 public class HomeActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private ArrayList<FoodItem> foodItems = new ArrayList<>();
-    private final String apiKey = ""; // TODO: will be committed to release version only
     private static final int EXPIREME_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     private TextView locationTextView;
     private TextView allItemsNumberTextView;
     private TextView expiringSoonItemsNumberTextView;
     private TextView expiredItemsNumberTextView;
     private static final int ADD_ITEM = 1;
-    private int allSize;
     private int soonSize;
     private int expiredSize;
     private boolean placesAcquired = false;
@@ -95,16 +91,13 @@ public class HomeActivity extends AppCompatActivity {
         populateListsCount();
         initLocation();
 
-        locationTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Location clicked", Toast.LENGTH_LONG).show();
-                Uri gmmIntentUri = Uri.parse(makeLonLatString());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                }
+        locationTextView.setOnClickListener(view -> {
+            Toast.makeText(getApplicationContext(), "Location clicked", Toast.LENGTH_LONG).show();
+            Uri gmmIntentUri = Uri.parse(makeLonLatString());
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
             }
         });
         componentName = new ComponentName(this, ExpirationJobService.class);
@@ -119,10 +112,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void populateListsCount() {
         foodItems = dbHelper.getAllItems();
-        allSize = getFilteredItems("ALL").size();
+        int allSize = getFilteredItems("ALL").size();
         soonSize = getFilteredItems("SOON").size();
         expiredSize = getFilteredItems("EXPIRED").size();
-        allItemsNumberTextView.setText(String.valueOf(allSize ));
+        allItemsNumberTextView.setText(String.valueOf(allSize));
         expiringSoonItemsNumberTextView.setText(String.valueOf(soonSize));
         expiredItemsNumberTextView.setText(String.valueOf(expiredSize));
         initPlaces();
@@ -176,27 +169,19 @@ public class HomeActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // most common reason for location to be null is on emulators, location was never used before
-                        Log.d("getLastLocation", "success");
-                        if (location != null) {
-                            DecimalFormat lonlatFormat = new DecimalFormat("####.####");
-                            longitude = location.getLongitude();
-                            latitude = location.getLatitude();
-                            Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
-                            locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
-                            initPlaces();
-                        } else
-                            Log.d("getLastLocation", "location is null");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("getLastLocation", "failed");
-                }
-            });
+                .addOnSuccessListener(this, location -> {
+                    // most common reason for location to be null is on emulators, location was never used before
+                    Log.d("getLastLocation", "success");
+                    if (location != null) {
+                        DecimalFormat lonlatFormat = new DecimalFormat("####.####");
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                        Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
+                        locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
+                        initPlaces();
+                    } else
+                        Log.d("getLastLocation", "location is null");
+                }).addOnFailureListener(e -> Log.e("getLastLocation", "failed"));
         } catch (SecurityException e) {
             // this is just so getLastLocation() won't complain
         }
@@ -229,7 +214,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void setLocationMessage(String name, String address, String state) {
+    private void setLocationMessage(String name) {
         DecimalFormat distanceFormat = new DecimalFormat("##.#");
 
         String msg;
@@ -250,24 +235,22 @@ public class HomeActivity extends AppCompatActivity {
         Log.e("handlePlaces", "start");
         String expiringState;
 
-        if (expiredSize > 0 )
-            expiringState = "expired";
-        else if (soonSize > 0)
-            expiringState = "expiring";
-        else {
+        if (!(expiredSize > 0 || soonSize > 0)) {
             locationTextView.setVisibility(View.GONE);
             Log.e("handlePlaces", "nothing expiring/soon, returning");
             return;
         }
         // this is for mock testing
+        // TODO: will be committed to release version only
+        String apiKey = "";
         if (apiKey.equals("")) {
             //Toast.makeText(this, "API Key not defined, unable to show nearby places", Toast.LENGTH_LONG).show();
-            setLocationMessage("Wollaston's Market", "369 Huntington Ave, Boston, MA 02115", expiringState);
+            setLocationMessage("Wollaston's Market");
             return;
         }
         if (placesAcquired) {// only get places once!
             Log.e("handlePlaces", "place already acquired once");
-            setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
+            setLocationMessage(foundPlaceName);
 
             return;
         }
@@ -298,11 +281,9 @@ public class HomeActivity extends AppCompatActivity {
             for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
                 Log.e("placeLikelihood" , "name=" + placeLikelihood.getPlace().getName());
                 Log.e("placeLikelihood" , "types size=" + placeLikelihood.getPlace().getTypes().size());
-                ListIterator<Place.Type> listIt = placeLikelihood.getPlace().getTypes().listIterator();
-                while (listIt.hasNext()) {
-                    Place.Type type = listIt.next();
+                for (Place.Type type : placeLikelihood.getPlace().getTypes()) {
                     Log.e("placeLikelihood", "type=" + type.toString());
-                    if (type.toString().equals("SUPERMARKET") ) {
+                    if (type.toString().equals("SUPERMARKET")) {
                         foundPlaceName = placeLikelihood.getPlace().getName();
                         foundPlaceAddress = placeLikelihood.getPlace().getAddress();
                         foundPlaceId = placeLikelihood.getPlace().getId();
@@ -311,7 +292,7 @@ public class HomeActivity extends AppCompatActivity {
                         nearby_lon = placeLikelihood.getPlace().getLatLng().longitude;
                         Log.e("addOnSuccessListener", "lat=" + nearby_lat + " lon=" + nearby_lon);
                         Log.e("addOnSuccessListener", "distance=" + distance(latitude, longitude, nearby_lat, nearby_lon));
-                        setLocationMessage(foundPlaceName, foundPlaceAddress, expiringState);
+                        setLocationMessage(foundPlaceName);
                         break;
                     }
                 }
@@ -319,7 +300,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (found)
                     return;
             }
-            setLocationMessage(null, null, expiringState);
+            setLocationMessage(null);
         } );
         currentPlaceTask.addOnFailureListener( (exception) -> {
             Log.e("addOnSuccessListener", "failure");
@@ -332,7 +313,7 @@ public class HomeActivity extends AppCompatActivity {
     {
         Log.e("distance", lat_a + " " + lng_a + " " + lat_b + " " + lng_b);
         if (lat_a>180)
-            return Float.valueOf(1.2f);
+            return 1.2f;
 
         float[] results = new float[3];
         Location.distanceBetween(lat_a, lng_a, lat_b, lng_b, results);
@@ -422,7 +403,7 @@ public class HomeActivity extends AppCompatActivity {
         // Schedule job
         Log.e("Home:scheduleJob", "Scheduling job");
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(builder.build());
+        Objects.requireNonNull(jobScheduler).schedule(builder.build());
         jobDelayOffset += 60;
     }
 }

@@ -97,12 +97,9 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     private void displayUndoSnackBar() {
         snackbar = Snackbar.make(recyclerView, "Deleted " + recentlyDeleted.getName(), Snackbar.LENGTH_LONG);
-        snackbar.setAction("UNDO", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemsFiltered.add(recentlyDeletedPosition, recentlyDeleted);
-                notifyItemInserted(recentlyDeletedPosition);
-            }
+        snackbar.setAction("UNDO", v -> {
+            itemsFiltered.add(recentlyDeletedPosition, recentlyDeleted);
+            notifyItemInserted(recentlyDeletedPosition);
         });
         snackbar.addCallback(new Snackbar.Callback() {
             @Override
@@ -115,6 +112,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // RecyclerView ADAPTER OVERRIDE METHODS
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_list_adapter_item,parent,false);
@@ -252,7 +250,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
         @Override
         public void onClick(View view) {
-            if (myClickListener != null) myClickListener.onItemClick(view, getAdapterPosition());
+            if (myClickListener != null) myClickListener.onItemClick(getAdapterPosition());
         }
     }
 
@@ -263,6 +261,6 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(int position);
     }
 }

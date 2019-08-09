@@ -1,10 +1,8 @@
 package com.example.expireme;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import utils.DatabaseHelper;
 import utils.FoodItem;
@@ -37,7 +37,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
         dbHelper = new DatabaseHelper(getApplicationContext());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Item Details");
 
         itemNameTextView = findViewById(R.id.item_name);
@@ -97,18 +97,12 @@ public class ItemDetailsActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(itemName);
         alert.setMessage("Are you sure you want to delete " + itemName +"?");
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            //DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
-            public void onClick(DialogInterface dialog, int which) {
-                dbHelper.deleteItem(food.getId());
-                finish();
-            }
+        //DatabaseHelper helper = new DatabaseHelper(getApplicationContext());
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            dbHelper.deleteItem(food.getId());
+            finish();
         });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> dialog.cancel());
         alert.show();
     }
 

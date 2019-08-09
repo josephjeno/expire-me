@@ -19,7 +19,7 @@ public class FoodItem {
     private String note;
     private String dateAdded;
     private String expiryDate;
-    private Date dateExpiration;
+    private final Date dateExpiration;
 
     public FoodItem(String name, String note, String dateAdded, String expiryDate) {
         this.name = name;
@@ -71,7 +71,7 @@ public class FoodItem {
 
     public Date getDateExpiration() { return dateExpiration; }
 
-    public void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
+    // --Commented out by Inspection (08-Aug-19 22:58):public void setDateExpiration(Date dateExpiration) { this.dateExpiration = dateExpiration; }
 
     // Converts String into date
     public Date getDateFromString(String date) {

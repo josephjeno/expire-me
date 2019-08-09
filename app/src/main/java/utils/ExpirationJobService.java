@@ -18,13 +18,12 @@ import com.example.expireme.R;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
 public class ExpirationJobService extends JobService {
     private final String CHANNEL_ID = "1";
-    private final int intentId = 100;
-    private final int notificationId = 9;
     private DatabaseHelper dbHelper;
 
     private void createNotificationChannel() {
@@ -35,7 +34,7 @@ public class ExpirationJobService extends JobService {
 
             channel.setDescription(description);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
     }
 
@@ -43,6 +42,7 @@ public class ExpirationJobService extends JobService {
         createNotificationChannel();
         Intent new_intent = new Intent(this, HomeActivity.class);
         new_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        int intentId = 100;
         PendingIntent pendingIntent = PendingIntent.getActivity(this, intentId, new_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -56,6 +56,7 @@ public class ExpirationJobService extends JobService {
         Notification notificationBar = builder.build();
         Log.e("onStartCommand", "notificationBar.flags=" + notificationBar.flags);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        int notificationId = 9;
         notificationManager.notify(notificationId, notificationBar);
     }
 

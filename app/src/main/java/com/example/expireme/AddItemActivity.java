@@ -222,7 +222,8 @@ public class AddItemActivity extends AppCompatActivity {
 
     private void myOnDateSet(TextView date, int year, int month, int dayOfMonth) {
         Log.d("AddItemActivity", "onDateSet");
-        date.setText((month+1) + "-" + dayOfMonth + "-" + year);
+        String dateString = (month+1) + "-" + dayOfMonth + "-" + year;
+        date.setText(dateString);
     }
 }
 

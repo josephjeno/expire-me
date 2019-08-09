@@ -15,7 +15,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/button_add"
-        android:gravity="right"
+        android:gravity="end"
         android:onClick="onAddItemClicked"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -153,7 +153,8 @@
             android:id="@+id/locationTextView"
             android:layout_width="298dp"
             android:layout_height="match_parent"
-            android:paddingLeft="25dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:gravity="center_vertical"
             android:text="@string/location_info"
             android:textSize="18sp" />

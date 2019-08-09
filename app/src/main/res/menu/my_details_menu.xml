@@ -3,13 +3,13 @@
     <item
         android:id="@+id/show_item_edit_button"
         android:title=""
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_edit_24"
         />
     <item
         android:id="@+id/show_item_delete_button"
         android:title=""
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/delete"
         />
 </menu>

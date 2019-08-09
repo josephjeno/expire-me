@@ -10,7 +10,7 @@
         android:id="@+id/myRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/cardview_shadow_end_color"
+        android:background="@color/expireme_cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/button_add"
         android:onClick="onAddItemClicked"
-        android:gravity="right"
+        android:gravity="end"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

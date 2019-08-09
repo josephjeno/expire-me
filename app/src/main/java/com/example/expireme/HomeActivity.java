@@ -177,7 +177,8 @@ public class HomeActivity extends AppCompatActivity {
                         longitude = location.getLongitude();
                         latitude = location.getLatitude();
                         Log.d("addOnSuccessListener", "lon=" + lonlatFormat.format(longitude) + " lat=" + lonlatFormat.format(latitude));
-                        locationTextView.setText("Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude));
+                        String locationString = "Longitude=" + lonlatFormat.format(longitude) + "\nLatitude=" + lonlatFormat.format(latitude);
+                        locationTextView.setText(locationString);
                         initPlaces();
                     } else
                         Log.d("getLastLocation", "location is null");

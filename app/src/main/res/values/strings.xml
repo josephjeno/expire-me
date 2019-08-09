@@ -23,5 +23,6 @@
     <string name="show_item_note_hint">Don\'t forget to shake (mock)</string>
     <string name="show_item_purchased_on">Purchased on:</string>
     <string name="show_item_purchased_on_hint">07/18/2019 (mock)</string>
+    <string name="search">Search</string>
     <string name="expired_on">Expired 7/16/2019</string>
 </resources>

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardBackgroundColor="@color/expireme_cardview_light_background"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardMaxElevation="4dp">
@@ -28,19 +28,19 @@
 
         <TextView
             android:id="@+id/itemCountdownAdapterItem"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:padding="9dp"
-            android:text="2 months"
+            android:text="@string/two_months"
             android:gravity="center"
             android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="100sp"
+            android:layout_marginStart="100sp"
             android:orientation="vertical">
 
             <TextView

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,7 +76,7 @@ public class FoodItem {
 
     // Converts String into date
     public Date getDateFromString(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
         try {
             return sdf.parse(date);
         } catch (ParseException e) {

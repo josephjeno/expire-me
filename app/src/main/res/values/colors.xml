@@ -3,4 +3,6 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="expireme_cardview_light_background">#FFFAFAFA</color>
+    <color name="expireme_cardview_shadow_end_color">#03000000</color>
 </resources>

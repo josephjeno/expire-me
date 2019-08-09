@@ -7,7 +7,7 @@
         android:id="@+id/action_search"
         android:icon="@drawable/baseline_search_white_24dp"
         android:orderInCategory="100"
-        android:title="Search"
+        android:title="@string/search"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 </menu>

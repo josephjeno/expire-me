@@ -11,12 +11,12 @@
     <TextView
         android:text="@string/show_item_name"
         android:textSize="30sp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,12 +31,12 @@
         android:text="@string/show_item_expiration_date"
         android:paddingTop="40dp"
         android:textSize="30sp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_expiration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,12 +52,12 @@
         android:text="@string/show_item_note"
         android:paddingTop="40dp"
         android:textSize="30sp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <EditText
         android:id="@+id/itemDetailsNoteText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,12 +72,12 @@
         android:text="@string/show_item_purchased_on"
         android:paddingTop="40dp"
         android:textSize="30sp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <EditText
         android:id="@+id/itemDetailsPurchasedOnText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

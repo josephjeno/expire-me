@@ -21,9 +21,12 @@
             android:enabled="true"
             android:exported="true"/>
 
-        <activity android:name=".AddItemActivity" />
-        <activity android:name=".ItemDetailsActivity" />
-        <activity android:name=".ItemListActivity">
+        <activity android:name=".AddItemActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ItemDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ItemListActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -33,7 +36,8 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

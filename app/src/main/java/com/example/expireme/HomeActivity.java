@@ -75,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
     private double nearby_lon = 181;
     private ComponentName componentName;
     private int jobId = 0;
-    private static int jobDelayOffset = 0;
+    private static int jobDelayOffset = 60*60;
 
 
     @Override
@@ -393,7 +393,7 @@ public class HomeActivity extends AppCompatActivity {
         JobInfo.Builder builder = new JobInfo.Builder(jobId++, componentName);
         PersistableBundle extras = new PersistableBundle();
 
-        builder.setMinimumLatency((jobDelayOffset+60) * 1000);
+        builder.setMinimumLatency((jobDelayOffset) * 1000);
         builder.setOverrideDeadline((jobDelayOffset+70) * 1000);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setRequiresDeviceIdle(false);
@@ -404,7 +404,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.e("Home:scheduleJob", "Scheduling job");
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         Objects.requireNonNull(jobScheduler).schedule(builder.build());
-        jobDelayOffset += 60;
+        jobDelayOffset = 60*60*24;
     }
 }
 

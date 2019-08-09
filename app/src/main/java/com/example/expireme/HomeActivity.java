@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
     private int expiredSize;
     private boolean placesAcquired = false;
     private String foundPlaceName;
-    private String foundPlaceAddress;
+    //private String foundPlaceAddress;
     private String foundPlaceId;
     private double latitude;
     private double nearby_lat = 181;
@@ -233,7 +233,6 @@ public class HomeActivity extends AppCompatActivity {
     @RequiresPermission(allOf = {ACCESS_FINE_LOCATION, ACCESS_WIFI_STATE})
     private void handlePlaces() {
         Log.e("handlePlaces", "start");
-        String expiringState;
 
         if (!(expiredSize > 0 || soonSize > 0)) {
             locationTextView.setVisibility(View.GONE);
@@ -285,7 +284,7 @@ public class HomeActivity extends AppCompatActivity {
                     Log.e("placeLikelihood", "type=" + type.toString());
                     if (type.toString().equals("SUPERMARKET")) {
                         foundPlaceName = placeLikelihood.getPlace().getName();
-                        foundPlaceAddress = placeLikelihood.getPlace().getAddress();
+                        //foundPlaceAddress = placeLikelihood.getPlace().getAddress();
                         foundPlaceId = placeLikelihood.getPlace().getId();
                         found = true;
                         nearby_lat = placeLikelihood.getPlace().getLatLng().latitude;

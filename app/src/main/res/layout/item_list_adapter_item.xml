@@ -6,7 +6,6 @@
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
@@ -49,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Milk"
+                android:text="@string/show_item_name_hint"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
@@ -58,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="Expired 7/16/2019"
+                android:text="@string/expired_on"
                 android:textSize="24sp" />
 
         </LinearLayout>

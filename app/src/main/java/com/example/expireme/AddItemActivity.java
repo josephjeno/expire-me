@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import utils.DatabaseHelper;
@@ -70,7 +71,7 @@ public class AddItemActivity extends AppCompatActivity {
         itemAddedDateTextView = findViewById(R.id.editTextPurchasedOnDate);
 
         itemNameTextView.setOnItemClickListener((adapterView, view, i, l) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
             Date date = new Date();
             String time = sdf.format(date);
             itemAddedDateTextView.setText(time);
@@ -107,7 +108,7 @@ public class AddItemActivity extends AppCompatActivity {
 
         // Set purchased date to today by default
         if (itemAddedDateTextView.getText().length() == 0) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy", Locale.US);
             itemAddedDateTextView.setText(dateFormat.format(new Date()));
         }
 
@@ -174,7 +175,7 @@ public class AddItemActivity extends AppCompatActivity {
             );
             dbHelper.addFoodItem(foodItem);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
             try{
                 Date dateAddedDate = sdf.parse(itemAddedDateTextView.getText().toString());
                 Date expirationDateDate = sdf.parse(itemExpirationDate);

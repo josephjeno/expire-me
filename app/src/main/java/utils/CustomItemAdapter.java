@@ -223,6 +223,7 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.My
                 return filterResults;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 itemsFiltered = (ArrayList<FoodItem>) filterResults.values;

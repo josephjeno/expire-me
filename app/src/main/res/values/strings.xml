@@ -12,11 +12,16 @@
     <string name="add_item_purchased_on">Purchased on:</string>
     <string name="add_item_purchased_on_hint">(Today\'s date)</string>
     <string name="show_item_name">Name:</string>
-    <string name="show_item_name_hint">Chocolate Milk (mock)</string>
+    <string name="random_int">4</string>
+    <string name="location_info">Location Info will be here Location Info will be here Location Info will be here</string>
+    <string name="go_to_map">GoToMap</string>
+    <string name="two_months">2 Months</string>
+    <string name="show_item_name_hint">Milk</string>
     <string name="show_item_expiration_date">Expiration date:</string>
     <string name="show_item_expiration_date_hint">07/29/2019 (mock)</string>
     <string name="show_item_note">Note:</string>
     <string name="show_item_note_hint">Don\'t forget to shake (mock)</string>
     <string name="show_item_purchased_on">Purchased on:</string>
     <string name="show_item_purchased_on_hint">07/18/2019 (mock)</string>
+    <string name="expired_on">Expired 7/16/2019</string>
 </resources>

@@ -19,7 +19,9 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * Adapter used for ItemListActivity RecyclerView
+ */
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.MyViewHolder> implements Filterable {
 
     // Receive the context from ItemListActivity

@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Represents a food item
+ */
 public class FoodItem {
 
     private Long id;

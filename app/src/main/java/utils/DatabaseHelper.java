@@ -16,11 +16,14 @@ import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
 
-
+/**
+ * DatabaseHelper for communicating the the local DB.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "random";
 
+    // Stores items added by user
     private static class FoodItemEntry implements BaseColumns{
         private static final String TABLE_NAME = "FoodItems";
         private static final String COLUMN_NAME_FOOD_NAME = "name";
@@ -29,12 +32,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         private static final String COLUMN_NAME_NOTE = "note";
     }
 
+    // Stores all past items for expiration date autocomplete
     private static class StoredFoodItems implements BaseColumns{
         private static final String TABLE_NAME = "StoredFoodItems";
         private static final String COLUMN_NAME_ITEM = "name";
         private static final String COLUMN_NAME_DAYS = "days";
     }
-
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);

@@ -3,35 +3,24 @@ package com.example.expireme;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.appcompat.widget.SearchView;
+
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.SearchManager;
-import android.content.Context;
-import android.content.DialogInterface;
 
+import android.content.Context;
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.concurrent.TimeUnit;
-
 import utils.CustomItemAdapter;
-import utils.DatabaseHelper;
-import utils.FoodItem;
 import utils.SwipeToDeleteCallback;
 
 public class ItemListActivity extends AppCompatActivity implements CustomItemAdapter.ItemClickListener {
@@ -174,6 +163,7 @@ public class ItemListActivity extends AppCompatActivity implements CustomItemAda
             actionBar.setTitle("Expired Items");
     }
 
+    // When returned to activity from Item Details activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult", " requestCode="+ requestCode + " resultCode=" + resultCode);
         if (resultCode == RESULT_OK && (

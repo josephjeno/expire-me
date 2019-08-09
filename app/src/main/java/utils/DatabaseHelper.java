@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
-import utils.FoodItem;
+
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
